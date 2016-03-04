@@ -1,11 +1,10 @@
 package eu.freme.bpt;
 
-import eu.freme.bpt.input.DirectoryInputIterator;
-import eu.freme.bpt.input.InputIterator;
-import eu.freme.bpt.input.StandardInputIterator;
+import eu.freme.bpt.io.IOIterator;
+import eu.freme.bpt.io.IteratorFactory;
 import org.apache.commons.cli.*;
-
-import java.io.File;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Copyright (C) 2016 Agro-Know, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
@@ -25,16 +24,23 @@ import java.io.File;
  * limitations under the License.
  */
 public class Main {
+
+	public static final Logger logger = LoggerFactory.getLogger(Main.class);
+
 	public static void main(String[] args) {
 
 		// create options that will be parsed from the args
 		Option helpOption = new Option("h", "help", false, "Prints this message");
 		Option inputOption = Option.builder("i").longOpt("input").argName("input file(s)")
-				.desc("The input file or directory to process. In case of a directory, each file in that directory is processed").hasArg().build();
+				.desc("The input file or directory to process. In case of a directory, each file in that directory is processed. " +
+						"If not given, standard in is used.").hasArg().build();
+		Option outputOption = Option.builder("o").longOpt("output").argName("output dir")
+				.desc("The output directory. If not given, output is written to standard out.").hasArg().build();
 
 		Options options = new Options()
 				.addOption(helpOption)
-				.addOption(inputOption);
+				.addOption(inputOption)
+				.addOption(outputOption);
 
 		CommandLine commandLine = null;
 		int exitValue;
@@ -53,20 +59,14 @@ public class Main {
 			System.exit(exitValue);
 		}
 
-		// Create an InputIterator. This will be used to iterate over the input source(s)
-		InputIterator inputIterator;
-		if (commandLine.hasOption('i')) {
-			File input = new File(commandLine.getOptionValue('i'));
-			if (input.isDirectory()) {
-				inputIterator = new DirectoryInputIterator(input);
-			} else {
-				inputIterator = new DirectoryInputIterator(input);
-			}
-		} else {
-			inputIterator = new StandardInputIterator();
+		// Create an IOIterator. This will be used to iterate over the input source(s)
+		IOIterator ioIterator;
+		try {
+			ioIterator = IteratorFactory.create(commandLine);
+		} catch (Exception e) {
+			logger.error("Cannot handle input or output. Reason: ", e);
+			System.exit(2);
 		}
-
-		// TODO now do something useful with the iterator!
 
 	}
 }

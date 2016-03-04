@@ -1,6 +1,6 @@
-package eu.freme.bpt.input;
+package eu.freme.bpt.io;
 
-import java.io.InputStream;
+import java.util.Iterator;
 
 /**
  * Copyright (C) 2016 Agro-Know, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
@@ -19,20 +19,8 @@ import java.io.InputStream;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Does not really iterate, just returns the standard InputStream. Always allows one iteration.
+ * An IOIterator allows to iterate over InputStreams. Where these streams come from is implementation dependent.
+ * An InputStream returned using next() needs to be closed after use!
  *
  */
-public class StandardInputIterator implements InputIterator {
-	private boolean hasNext = true;
-
-	@Override
-	public boolean hasNext() {
-		return hasNext;
-	}
-
-	@Override
-	public InputStream next() {
-		hasNext = false;
-		return System.in;
-	}
-}
+public interface IOIterator extends Iterator<IO> {}

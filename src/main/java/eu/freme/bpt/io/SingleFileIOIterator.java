@@ -1,4 +1,4 @@
-package eu.freme.bpt.input;
+package eu.freme.bpt.io;
 
 import java.io.*;
 
@@ -22,17 +22,31 @@ import java.io.*;
  * Does not really iterate, just returns the InputStream created from the given file. Always allows one iteration.
  *
  */
-public class SingleFileInputIterator implements InputIterator {
+public class SingleFileIOIterator implements IOIterator {
 	private boolean hasNext = true;
 	private final InputStream in;
+	private final OutputStream out;
 
 	/**
-	 * Creates a SingleFileInputIterator from the given file.
+	 * Creates a SingleFileIOIterator from the given file.
+	 * @param inputFile    The file to process.
+	 * @param outputDir	   The directory to write the output. The output file is a file in that directory with the same name as the input file.
+	 * @throws FileNotFoundException	The given file is not found.
+	 */
+	public SingleFileIOIterator(final File inputFile, final File outputDir) throws FileNotFoundException {
+		in = new BufferedInputStream(new FileInputStream(inputFile));
+		File outputFile = new File(outputDir, inputFile.getName());
+		out = new BufferedOutputStream(new FileOutputStream(outputFile));
+	}
+
+	/**
+	 * Creates a SingleFileIOIterator from the given file. Output is written to standard out
 	 * @param inputFile    The file to process.
 	 * @throws FileNotFoundException	The given file is not found.
 	 */
-	public SingleFileInputIterator(final File inputFile) throws FileNotFoundException {
+	public SingleFileIOIterator(final File inputFile) throws FileNotFoundException {
 		in = new BufferedInputStream(new FileInputStream(inputFile));
+		out = System.out;
 	}
 
 	@Override
@@ -41,8 +55,8 @@ public class SingleFileInputIterator implements InputIterator {
 	}
 
 	@Override
-	public InputStream next() {
+	public IO next() {
 		hasNext = false;
-		return in;
+		return new IO(in, out);
 	}
 }

@@ -1,4 +1,4 @@
-package eu.freme.bpt.input;
+package eu.freme.bpt.io;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,20 +27,21 @@ import java.util.*;
  * Does NOT process directories recursively.
  *
  */
-public class DirectoryInputIterator implements InputIterator {
+public class DirectoryIOIterator implements IOIterator {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-
 	private final Iterator<File> fileIterator;
+	private final File outputDir;
 
 	/**
-	 * Creates a DirectoryInputIterator for a given directory.
+	 * Creates a DirectoryIOIterator for a given directory.
 	 * @param inputDirectory    The directory to process. Each file in the directory is iterated and an InputStream for
 	 *                          these files are returned upon calling next().
 	 */
-	public DirectoryInputIterator(final File inputDirectory) {
+	public DirectoryIOIterator(final File inputDirectory, final File outputDirectory) {
 		File[] inputFiles = inputDirectory.listFiles();
 		List<File> files = inputFiles == null ? Collections.emptyList() : Arrays.asList(inputFiles);
 		fileIterator = files.iterator();
+		outputDir = outputDirectory;
 	}
 
 	@Override
@@ -49,12 +50,16 @@ public class DirectoryInputIterator implements InputIterator {
 	}
 
 	@Override
-	public InputStream next() {
-		File file = fileIterator.next();
+	public IO next() {
+		File inFile = fileIterator.next();
+		File outFile = new File(outputDir, inFile.getName());
+
 		try {
-			return new BufferedInputStream(new FileInputStream(file));
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(inFile));
+			OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outFile));
+			return new IO(inputStream, outputStream);
 		} catch (FileNotFoundException e) {
-			logger.error("Could not create input stream from file {}.", file, e);
+			logger.error("Could not create input stream from file {}.", inFile, e);
 			throw new NoSuchElementException(e.getMessage());
 		}
 	}
