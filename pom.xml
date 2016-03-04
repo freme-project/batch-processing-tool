@@ -7,6 +7,32 @@
     <groupId>eu.freme</groupId>
     <artifactId>batch-processing-tool</artifactId>
     <version>0.1-SNAPSHOT</version>
+    <name>Batch Processing Tool</name>
+    <inceptionYear>2016</inceptionYear>
 
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!--log4j.version>2.2</log4j.version-->
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin> <!-- set compiler to 8.0 source -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
