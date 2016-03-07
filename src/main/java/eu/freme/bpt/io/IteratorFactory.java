@@ -29,7 +29,7 @@ public class IteratorFactory {
 
 	public static IOIterator create(final CommandLine commandLine) throws IOException, IOCombinationNotPossibleException {
 		File outputDir = null;
-		if (commandLine.hasOption('o')) {
+		if (commandLine.hasOption("of")) {
 			outputDir = new File(commandLine.getOptionValue('o'));
 			if (!outputDir.exists()) {
 				if (!outputDir.mkdirs()) {
@@ -42,7 +42,7 @@ public class IteratorFactory {
 			}
 		}
 		if (commandLine.hasOption('i')) {
-			File input = new File(commandLine.getOptionValue('i'));
+			File input = new File(commandLine.getOptionValue("if"));
 			if (input.isFile()) {
 				if (outputDir != null) {
 					return new SingleFileIOIterator(input, outputDir);
@@ -54,7 +54,7 @@ public class IteratorFactory {
 					return new DirectoryIOIterator(input, outputDir);
 				} else {
 					throw new IOCombinationNotPossibleException("If the input is a directory, the output should be a directory as well." +
-							" Check the -o option!");
+							" Check the -od option!");
 				}
 			}
 		} else {

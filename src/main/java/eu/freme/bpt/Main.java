@@ -31,10 +31,10 @@ public class Main {
 
 		// create options that will be parsed from the args
 		Option helpOption = new Option("h", "help", false, "Prints this message");
-		Option inputOption = Option.builder("i").longOpt("input").argName("input file(s)")
+		Option inputOption = Option.builder("if").longOpt("input-file").argName("input file")
 				.desc("The input file or directory to process. In case of a directory, each file in that directory is processed. " +
 						"If not given, standard in is used.").hasArg().build();
-		Option outputOption = Option.builder("o").longOpt("output").argName("output dir")
+		Option outputOption = Option.builder("od").longOpt("output-dir").argName("output dir")
 				.desc("The output directory. If not given, output is written to standard out.").hasArg().build();
 
 		Options options = new Options()
