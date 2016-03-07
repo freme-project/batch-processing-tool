@@ -84,6 +84,7 @@ public class Main {
 		IOIterator ioIterator;
 		try {
 			ioIterator = IteratorFactory.create(commandLine);
+			System.out.println();
 		} catch (Exception e) {
 			logger.error("Cannot handle input or output. Reason: ", e);
 			System.exit(2);

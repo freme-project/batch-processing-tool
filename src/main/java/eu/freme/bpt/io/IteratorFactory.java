@@ -1,5 +1,6 @@
 package eu.freme.bpt.io;
 
+import eu.freme.bpt.common.Format;
 import org.apache.commons.cli.CommandLine;
 
 import java.io.File;
@@ -28,9 +29,16 @@ import java.io.IOException;
 public class IteratorFactory {
 
 	public static IOIterator create(final CommandLine commandLine) throws IOException, IOCombinationNotPossibleException {
+		Format outFormat;
+		if (commandLine.hasOption('o')) {
+			outFormat = Format.valueOf(commandLine.getOptionValue('o').toLowerCase());
+		} else {
+			outFormat = Format.turtle;	// the default
+		}
+
 		File outputDir = null;
-		if (commandLine.hasOption("of")) {
-			outputDir = new File(commandLine.getOptionValue('o'));
+		if (commandLine.hasOption("od")) {
+			outputDir = new File(commandLine.getOptionValue("od"));
 			if (!outputDir.exists()) {
 				if (!outputDir.mkdirs()) {
 					throw new IOException("Could not create output directory " + outputDir);
@@ -41,17 +49,17 @@ public class IteratorFactory {
 				}
 			}
 		}
-		if (commandLine.hasOption('i')) {
+		if (commandLine.hasOption("if")) {
 			File input = new File(commandLine.getOptionValue("if"));
 			if (input.isFile()) {
 				if (outputDir != null) {
-					return new SingleFileIOIterator(input, outputDir);
+					return new SingleFileIOIterator(input, outputDir, outFormat);
 				} else {
 					return new SingleFileIOIterator(input);
 				}
 			} else {
 				if (outputDir != null) {
-					return new DirectoryIOIterator(input, outputDir);
+					return new DirectoryIOIterator(input, outputDir, outFormat);
 				} else {
 					throw new IOCombinationNotPossibleException("If the input is a directory, the output should be a directory as well." +
 							" Check the -od option!");
@@ -59,8 +67,7 @@ public class IteratorFactory {
 			}
 		} else {
 			if (outputDir != null) {
-				File output =  new File(outputDir, "bpt_output");
-				return new StandardIOIterator(output);
+				return new StandardIOIterator(outputDir, outFormat);
 			} else {
 				return new StandardIOIterator();
 			}

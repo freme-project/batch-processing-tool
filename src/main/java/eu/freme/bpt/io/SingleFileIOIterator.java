@@ -1,5 +1,7 @@
 package eu.freme.bpt.io;
 
+import eu.freme.bpt.common.Format;
+
 import java.io.*;
 
 /**
@@ -22,7 +24,7 @@ import java.io.*;
  * Does not really iterate, just returns the InputStream created from the given file. Always allows one iteration.
  *
  */
-public class SingleFileIOIterator implements IOIterator {
+public class SingleFileIOIterator extends AbstractIOIterator {
 	private boolean hasNext = true;
 	private final InputStream in;
 	private final OutputStream out;
@@ -33,9 +35,9 @@ public class SingleFileIOIterator implements IOIterator {
 	 * @param outputDir	   The directory to write the output. The output file is a file in that directory with the same name as the input file.
 	 * @throws FileNotFoundException	The given file is not found.
 	 */
-	public SingleFileIOIterator(final File inputFile, final File outputDir) throws FileNotFoundException {
+	public SingleFileIOIterator(final File inputFile, final File outputDir, final Format outFormat) throws FileNotFoundException {
 		in = new BufferedInputStream(new FileInputStream(inputFile));
-		File outputFile = new File(outputDir, inputFile.getName());
+		File outputFile = getOutputFile(outputDir, inputFile, outFormat);
 		out = new BufferedOutputStream(new FileOutputStream(outputFile));
 	}
 

@@ -1,5 +1,6 @@
 package eu.freme.bpt.io;
 
+import eu.freme.bpt.common.Format;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,21 +28,23 @@ import java.util.*;
  * Does NOT process directories recursively.
  *
  */
-public class DirectoryIOIterator implements IOIterator {
+public class DirectoryIOIterator extends AbstractIOIterator {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final Iterator<File> fileIterator;
 	private final File outputDir;
+	private final Format outFormat;
 
 	/**
 	 * Creates a DirectoryIOIterator for a given directory.
 	 * @param inputDirectory    The directory to process. Each file in the directory is iterated and an InputStream for
 	 *                          these files are returned upon calling next().
 	 */
-	public DirectoryIOIterator(final File inputDirectory, final File outputDirectory) {
+	public DirectoryIOIterator(final File inputDirectory, final File outputDirectory, final Format outFormat) {
 		File[] inputFiles = inputDirectory.listFiles();
 		List<File> files = inputFiles == null ? Collections.emptyList() : Arrays.asList(inputFiles);
 		fileIterator = files.iterator();
 		outputDir = outputDirectory;
+		this.outFormat = outFormat;
 	}
 
 	@Override
@@ -52,7 +55,7 @@ public class DirectoryIOIterator implements IOIterator {
 	@Override
 	public IO next() {
 		File inFile = fileIterator.next();
-		File outFile = new File(outputDir, inFile.getName());
+		File outFile = getOutputFile(outputDir, inFile, outFormat);
 
 		try {
 			InputStream inputStream = new BufferedInputStream(new FileInputStream(inFile));

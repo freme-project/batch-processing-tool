@@ -1,4 +1,4 @@
-package eu.freme.bpt.util;
+package eu.freme.bpt.common;
 
 /**
  * Copyright (C) 2016 Agro-Know, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
@@ -17,21 +17,27 @@ package eu.freme.bpt.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
+ * Some info in some mime-types
+ *
  */
-public class Pair<N,V> {
-	private final N name;
-	private final V value;
+public enum Format {
+	text("txt", "text/plain"),
+	turtle("ttl", "text/turtle"),
+	;
+	private final String fileExtension;
+	private final String mimeType;		// TODO: to mime type object of the HTTP library to be used...
 
-	public Pair(N name, V value) {
-		this.name = name;
-		this.value = value;
+
+	Format(String fileExtension, String mimeType) {
+		this.fileExtension = fileExtension;
+		this.mimeType = mimeType;
 	}
 
-	public N getName() {
-		return name;
+	public String getFileExtension() {
+		return fileExtension;
 	}
 
-	public V getValue() {
-		return value;
+	public String getMimeType() {
+		return mimeType;
 	}
 }

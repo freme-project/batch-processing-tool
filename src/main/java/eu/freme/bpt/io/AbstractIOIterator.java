@@ -1,4 +1,8 @@
-package eu.freme.bpt.util;
+package eu.freme.bpt.io;
+
+import eu.freme.bpt.common.Format;
+
+import java.io.File;
 
 /**
  * Copyright (C) 2016 Agro-Know, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
@@ -18,20 +22,15 @@ package eu.freme.bpt.util;
  * limitations under the License.
  *
  */
-public class Pair<N,V> {
-	private final N name;
-	private final V value;
+public abstract class AbstractIOIterator implements IOIterator {
 
-	public Pair(N name, V value) {
-		this.name = name;
-		this.value = value;
-	}
-
-	public N getName() {
-		return name;
-	}
-
-	public V getValue() {
-		return value;
+	protected File getOutputFile(final File outputDir, final File inputFile, final Format outFormat) {
+		String outFileName = inputFile.getName();
+		int pointIndex = outFileName.lastIndexOf('.');
+		if (pointIndex > 0) {
+			outFileName = outFileName.substring(0, pointIndex);
+		}
+		outFileName += "." + outFormat.getFileExtension();
+		return new File(outputDir, outFileName);
 	}
 }

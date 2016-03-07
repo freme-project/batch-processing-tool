@@ -1,5 +1,7 @@
 package eu.freme.bpt.io;
 
+import eu.freme.bpt.common.Format;
+
 import java.io.*;
 
 /**
@@ -30,7 +32,8 @@ public class StandardIOIterator implements IOIterator {
 		outputStream = System.out;
 	}
 
-	public StandardIOIterator(final File outputFile) throws FileNotFoundException {
+	public StandardIOIterator(final File outputDir, final Format outFormat) throws FileNotFoundException {
+		File outputFile = new File(outputDir, "bpt_output." + outFormat.getFileExtension());
 		outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
 	}
 
