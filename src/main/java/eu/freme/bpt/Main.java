@@ -59,6 +59,8 @@ public class Main {
 			System.exit(exitValue);
 		}
 
+		logger.debug("Commandline successfully parsed!");
+
 		// Create an IOIterator. This will be used to iterate over the input source(s)
 		IOIterator ioIterator;
 		try {
