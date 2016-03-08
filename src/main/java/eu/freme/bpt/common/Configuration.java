@@ -14,21 +14,20 @@ import java.util.Properties;
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
  * Institut für Angewandte Informatik e. V. an der Universität Leipzig,
  * Istituto Superiore Mario Boella, Tilde, Vistatec, WRIPL (http://freme-project.eu)
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
+ * <p>
  * Holds the configuration of the tool. This includes parameter options and properties.
- *
  */
 public class Configuration {
 	private final File inputFile;
@@ -50,9 +49,9 @@ public class Configuration {
 		Format outFormat = commandLine.hasOption('o') ? Format.valueOf(commandLine.getOptionValue('o')) : Format.turtle;
 		String sourceLang = commandLine.getOptionValue('s', "en");
 		String targetLang = commandLine.getOptionValue('t', "de");
-                String domain = commandLine.getOptionValue('d', null);
-                String system = commandLine.getOptionValue("system", null);
-                String key = commandLine.getOptionValue('k', null);                          
+		String domain = commandLine.getOptionValue('d', null);
+		String system = commandLine.getOptionValue("system", null);
+		String key = commandLine.getOptionValue('k', null);
 
 		Properties properties = new Properties();
 		try (InputStream propertiesStream = Configuration.class.getResourceAsStream("/bpt.properties")) {
@@ -65,36 +64,43 @@ public class Configuration {
 		}
 
 		Map<String, String> serviceToEndpoint = new HashMap<>();
-        serviceToEndpoint.put("e-entity", properties.getProperty("e-entity"));
-        serviceToEndpoint.put("e-link", properties.getProperty("e-link"));
-        serviceToEndpoint.put("e-publishing", properties.getProperty("e-publishing"));
-        serviceToEndpoint.put("e-terminology", properties.getProperty("e-terminology"));
-        serviceToEndpoint.put("e-translate", properties.getProperty("e-translate"));
-        serviceToEndpoint.put("pipelining", properties.getProperty("pipelining"));
+		serviceToEndpoint.put("e-entity", properties.getProperty("e-entity"));
+		serviceToEndpoint.put("e-link", properties.getProperty("e-link"));
+		serviceToEndpoint.put("e-publishing", properties.getProperty("e-publishing"));
+		serviceToEndpoint.put("e-terminology", properties.getProperty("e-terminology"));
+		serviceToEndpoint.put("e-translate", properties.getProperty("e-translate"));
+		serviceToEndpoint.put("pipelining", properties.getProperty("pipelining"));
 
-		return new Configuration(inputFile, outputDir, inFormat, outFormat, serviceToEndpoint, sourceLang, targetLang, domain, key, system);
+		return new Configuration(inputFile, outputDir, inFormat, outFormat, sourceLang, targetLang, domain, key, system, properties);
 	}
 
 	public Configuration(File inputFile,
 						 File outputDir,
 						 Format inFormat,
 						 Format outFormat,
-						 Map<String, String> serviceToEndpoint,
 						 String sourceLang,
 						 String targetLang,
-                                                 String domain,
-                                                 String key,
-                                                 String system) {
+						 String domain,
+						 String key,
+						 String system,
+						 Properties properties) {
 		this.inputFile = inputFile;
 		this.outputDir = outputDir;
 		this.inFormat = inFormat;
 		this.outFormat = outFormat;
-		this.serviceToEndpoint = serviceToEndpoint;
 		this.sourceLang = sourceLang;
 		this.targetLang = targetLang;
-                this.domain = domain;
-                this.key = key;
-                this.system = system;
+		this.domain = domain;
+		this.key = key;
+		this.system = system;
+
+		serviceToEndpoint = new HashMap<>();
+		serviceToEndpoint.put("e-entity", properties.getProperty("e-entity"));
+		serviceToEndpoint.put("e-link", properties.getProperty("e-link"));
+		serviceToEndpoint.put("e-publishing", properties.getProperty("e-publishing"));
+		serviceToEndpoint.put("e-terminology", properties.getProperty("e-terminology"));
+		serviceToEndpoint.put("e-translate", properties.getProperty("e-translate"));
+		serviceToEndpoint.put("pipelining", properties.getProperty("pipelining"));
 	}
 
 	public File getInputFile() {
@@ -124,16 +130,16 @@ public class Configuration {
 	public String getTargetLang() {
 		return targetLang;
 	}
-        
-        public String getDomain() {
+
+	public String getDomain() {
 		return domain;
 	}
-        
-        public String getKey() {
+
+	public String getKey() {
 		return key;
 	}
-        
-        public String getSystem() {
+
+	public String getSystem() {
 		return system;
 	}
 }

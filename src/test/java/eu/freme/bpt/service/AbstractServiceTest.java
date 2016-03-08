@@ -6,9 +6,10 @@ import eu.freme.bpt.common.Format;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
+import java.util.Properties;
 
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
@@ -33,13 +34,18 @@ import java.util.Collections;
 public class AbstractServiceTest {
 
 	@Test
-	public void testETranslate() {
+	public void testETranslate() throws IOException {
 		String input = "This is an English text";
 		InputStream inputStream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
 		ByteArrayBuffer outputStream = new ByteArrayBuffer();
 
+		Properties properties = new Properties();
+		try (InputStream propertiesStream = this.getClass().getResourceAsStream("/bpt.properties")) {
+			properties.load(propertiesStream);
+		}
+
 		Configuration configuration = new Configuration(null, null, Format.text, Format.turtle,
-				Collections.singletonMap("e-translate", "http://api.freme-project.eu/current/e-translation/tilde"), "en", "de", null, null, null);
+				"en", "de", null, null, null, properties);
 
 		ETranslate eTranslate = new ETranslate (
 				inputStream,
