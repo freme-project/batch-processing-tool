@@ -1,7 +1,7 @@
 package eu.freme.bpt.service;
 
 /**
- * Copyright (C) 2016 Agro-Know, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
+ * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
  * Institut für Angewandte Informatik e. V. an der Universität Leipzig,
  * Istituto Superiore Mario Boella, Tilde, Vistatec, WRIPL (http://freme-project.eu)
  *
