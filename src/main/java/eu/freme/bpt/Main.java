@@ -51,11 +51,13 @@ public class Main {
 						"If not given, standard in is used.").hasArg().build();
 		Option outputOption = Option.builder("od").longOpt("output-dir").argName("output dir")
 				.desc("The output directory. If not given, output is written to standard out.").hasArg().build();
+		Option propertiesOption = Option.builder("prop").longOpt("properties").argName("properties file").desc("The properties file that contains configuration of the tool.").hasArg().build();
 
 		Options options = new Options()
 				.addOption(helpOption)
 				.addOption(inputOption)
-				.addOption(outputOption);
+				.addOption(outputOption)
+				.addOption(propertiesOption);
 
 		/////// Common service options ///////
 		Option informatOption = Option.builder("f").longOpt("informat").argName("FORMAT").desc("The format of the input document(s). Defaults to 'turtle'").hasArg().build();
@@ -84,7 +86,7 @@ public class Main {
 		if ((exitValue != 0) || commandLine.hasOption("h") || service == null) {
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.setWidth(132);
-			formatter.printHelp("java -jar <this jar file> ", options, true);
+			formatter.printHelp("java -jar <this jar file> <e-service> ", options, true);
 			System.exit(exitValue);
 		}
 
