@@ -1,11 +1,11 @@
 package eu.freme.bpt.service;
 
-import com.sun.xml.internal.ws.util.ByteArrayBuffer;
 import eu.freme.bpt.common.Configuration;
 import eu.freme.bpt.common.Format;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -37,7 +37,7 @@ public class AbstractServiceTest {
 	public void testETranslate() throws IOException {
 		String input = "This is an English text";
 		InputStream inputStream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
-		ByteArrayBuffer outputStream = new ByteArrayBuffer();
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
 		Properties properties = new Properties();
 		try (InputStream propertiesStream = this.getClass().getResourceAsStream("/bpt.properties")) {
