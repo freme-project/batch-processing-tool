@@ -74,15 +74,14 @@ public class Main {
 		Option key = Option.builder("k").longOpt("key").hasArg().argName("KEY").desc("A private key to access private and not publicly available translation systems. Key can be created by contacting Tilde team. Optional, if omitted then translates with public systems.").required(false).build();
 		Option system = Option.builder().longOpt("system").hasArg().argName("SYSTEM").desc("ID of the translation system to be used. Overwrites source-lang, target-lang and domain.").required(false).build();
 		options.addOption(sourceLang).addOption(targetLang).addOption(domain).addOption(key).addOption(system);
-                //e-entity
-                Option language = Option.builder("l").longOpt("language").hasArg().argName("LANGUAGE").desc("The source language of the input document(s)").required(false).build();
-                Option dataset = Option.builder().longOpt("dataset").hasArg().argName("DATASET").desc("The dataset used for entity linking which includes a list of entites and associated labels.").required(false).build();
-                Option mode = Option.builder().longOpt("mode").hasArg().argName("MODE").desc("This parameter allows to produce only partly results of named entity recognition.").required(false).build();
-                options.addOption(language).addOption(dataset).addOption(mode);	
-                // TODO
+		//e-entity
+		Option language = Option.builder("l").longOpt("language").hasArg().argName("LANGUAGE").desc("The source language of the input document(s)").required(false).build();
+		Option dataset = Option.builder().longOpt("dataset").hasArg().argName("DATASET").desc("The dataset used for entity linking which includes a list of entites and associated labels.").required(false).build();
+		Option mode = Option.builder().longOpt("mode").hasArg().argName("MODE").desc("This parameter allows to produce only partly results of named entity recognition.").required(false).build();
+		options.addOption(language).addOption(dataset).addOption(mode);
+		// TODO
 
 		String service = serviceAndArgs.getName();
-		// TODO: map service on service endpoint using the properties
 
 		CommandLine commandLine = null;
 		int exitValue;
