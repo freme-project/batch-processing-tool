@@ -15,10 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
@@ -108,7 +105,7 @@ public class Main {
 			Configuration configuration = Configuration.create(commandLine);
 
 			ExecutorService executorService = Executors.newFixedThreadPool(configuration.getThreads());
-			Set<Future<Boolean>> tasks = new HashSet<>();	// TODO: use this set of tasks to handle according to the failure policy.
+			Set<Future<Boolean>> tasks = new HashSet<>();
 
 			ioIterator = IteratorFactory.create(configuration);
 			while (ioIterator.hasNext()) {
@@ -130,6 +127,26 @@ public class Main {
 				}
 			}
 			executorService.shutdown();
+			while (!executorService.isTerminated()) {
+				Iterator<Future<Boolean>> resultIter = tasks.iterator();
+				Future<Boolean> result = resultIter.next();
+				if (result.isDone()) {
+					boolean success;
+					try {
+						success = result.get();
+					} catch (CancellationException | ExecutionException | InterruptedException e) {
+						success = false;
+					}
+					if (!success) {
+						logger.warn("A task failed!");
+						// TODO: act according to failure policy!
+					} else {
+						logger.info("Success!");
+					}
+					resultIter.remove();
+				}
+				Thread.sleep(1000);
+			}
 			executorService.awaitTermination(1, TimeUnit.DAYS);
 		} catch (Exception e) {
 			logger.error("Cannot handle input or output. Reason: ", e);

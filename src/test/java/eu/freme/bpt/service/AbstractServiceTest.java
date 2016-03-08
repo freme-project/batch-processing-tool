@@ -11,6 +11,8 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
+import static org.junit.Assert.assertTrue;
+
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
  * Institut für Angewandte Informatik e. V. an der Universität Leipzig,
@@ -52,7 +54,8 @@ public class AbstractServiceTest {
 				configuration
 		);
 
-		eTranslate.run();
+		Boolean success = eTranslate.call();
+		assertTrue(success);
 		System.out.println("translation: " + outputStream.toString(StandardCharsets.UTF_8.name()));
 
 	}
