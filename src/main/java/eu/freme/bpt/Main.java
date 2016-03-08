@@ -92,12 +92,11 @@ public class Main {
 
 		logger.debug("Commandline successfully parsed!");
 
-		Configuration configuration = Configuration.create(commandLine);
-
 		// Iterate over the input source(s)
 		// TODO: services can be put on an ExecutorService (thread pool)
 		IOIterator ioIterator;
 		try {
+			Configuration configuration = Configuration.create(commandLine);
 			ioIterator = IteratorFactory.create(configuration);
 			while (ioIterator.hasNext()) {
 				IO io = ioIterator.next();
