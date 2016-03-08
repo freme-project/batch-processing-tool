@@ -1,6 +1,0 @@
-2016-03-08 15:54:38,256 DEBUG [main] eu.freme.bpt.Main(102): Commandline successfully parsed!
-2016-03-08 15:54:38,567 DEBUG [main] eu.freme.bpt.service.AbstractService(65): Request alright.
-2016-03-08 15:54:50,162 DEBUG [main] eu.freme.bpt.Main(102): Commandline successfully parsed!
-2016-03-08 15:54:50,495 DEBUG [main] eu.freme.bpt.service.AbstractService(65): Request alright.
-2016-03-08 16:03:50,959 DEBUG [main] eu.freme.bpt.Main(102): Commandline successfully parsed!
-2016-03-08 16:03:51,280 DEBUG [main] eu.freme.bpt.service.AbstractService(65): Request alright.
