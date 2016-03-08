@@ -40,6 +40,7 @@ public class Configuration {
 	private final String key;
 	private final String system;
 
+	private final Properties properties;
 	private final Map<String, String> serviceToEndpoint;
 
 	public static Configuration create(CommandLine commandLine) throws IOException {
@@ -85,6 +86,7 @@ public class Configuration {
 		this.domain = domain;
 		this.key = key;
 		this.system = system;
+		this.properties = properties;
 
 		serviceToEndpoint = new HashMap<>();
 		serviceToEndpoint.put("e-entity", properties.getProperty("e-entity"));
@@ -133,5 +135,17 @@ public class Configuration {
 
 	public String getSystem() {
 		return system;
+	}
+
+	public int getThreads() {
+		return Integer.parseInt(properties.getProperty("threads"));
+	}
+
+	public String getFailureStrategy() {
+		return properties.getProperty("failure");
+	}
+
+	public String getPrefix() {
+		return properties.getProperty("prefix");
 	}
 }
