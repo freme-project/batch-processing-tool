@@ -31,5 +31,17 @@ public class ETranslate extends AbstractService {
 		super("e-translate", inputStream, outputStream, configuration);
 		parameters.put("source-lang", configuration.getSourceLang());
 		parameters.put("target-lang", configuration.getTargetLang());
+                
+                if (configuration.getDomain() != null) {
+                    parameters.put("domain", configuration.getDomain());
+                }
+                
+                if (configuration.getKey() != null) {
+                    parameters.put("key", configuration.getKey());
+                }
+                
+                if (configuration.getSystem() != null) {
+                    parameters.put("system", configuration.getSystem());
+                }
 	}
 }

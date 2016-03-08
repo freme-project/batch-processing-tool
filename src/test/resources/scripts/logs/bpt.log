@@ -1,0 +1,82 @@
+2016-03-08 14:06:04,864 DEBUG [main] eu.freme.bpt.Main(91): Commandline successfully parsed!
+2016-03-08 14:06:06,200 DEBUG [main] eu.freme.bpt.service.AbstractService(65): Request alright.
+2016-03-08 14:06:51,180 DEBUG [main] eu.freme.bpt.Main(91): Commandline successfully parsed!
+2016-03-08 14:06:52,346 DEBUG [main] eu.freme.bpt.service.AbstractService(65): Request alright.
+2016-03-08 14:31:06,933 DEBUG [main] eu.freme.bpt.Main(92): Commandline successfully parsed!
+2016-03-08 14:31:08,401 DEBUG [main] eu.freme.bpt.service.AbstractService(65): Request alright.
+2016-03-08 14:34:18,028 DEBUG [main] eu.freme.bpt.Main(92): Commandline successfully parsed!
+2016-03-08 14:34:19,965 DEBUG [main] eu.freme.bpt.service.AbstractService(65): Request alright.
+2016-03-08 14:37:10,780 DEBUG [main] eu.freme.bpt.Main(92): Commandline successfully parsed!
+2016-03-08 14:37:12,399 DEBUG [main] eu.freme.bpt.service.AbstractService(65): Request alright.
+2016-03-08 14:38:39,861 DEBUG [main] eu.freme.bpt.Main(92): Commandline successfully parsed!
+2016-03-08 14:38:41,649 DEBUG [main] eu.freme.bpt.service.AbstractService(65): Request alright.
+2016-03-08 14:38:59,118 DEBUG [main] eu.freme.bpt.Main(92): Commandline successfully parsed!
+2016-03-08 14:39:00,127 ERROR [main] eu.freme.bpt.service.AbstractService(80): Error response from service http://api.freme-project.eu/current/e-translation/tilde: Status 404: Not Found - {
+  "exception": "eu.freme.broker.exception.ExternalServiceFailedException",
+  "path": "//e-translation/tilde",
+  "message": "External service failed with status code 404",
+  "error": "Not Found",
+  "status": 404,
+  "timestamp": 1457444363705
+}
+2016-03-08 14:57:18,978 DEBUG [main] eu.freme.bpt.Main(94): Commandline successfully parsed!
+2016-03-08 14:57:20,141 ERROR [main] eu.freme.bpt.service.AbstractService(80): Error response from service http://api.freme-project.eu/current/e-translation/tilde: Status 404: Not Found - {
+  "exception": "eu.freme.broker.exception.ExternalServiceFailedException",
+  "path": "//e-translation/tilde",
+  "message": "External service failed with status code 404",
+  "error": "Not Found",
+  "status": 404,
+  "timestamp": 1457445463724
+}
+2016-03-08 14:59:34,241 DEBUG [main] eu.freme.bpt.Main(94): Commandline successfully parsed!
+2016-03-08 15:05:35,184 ERROR [main] eu.freme.bpt.service.AbstractService(80): Error response from service http://api.freme-project.eu/current/e-translation/tilde: Status 404: Not Found - {
+  "exception": "eu.freme.broker.exception.ExternalServiceFailedException",
+  "path": "//e-translation/tilde",
+  "message": "External service failed with status code 404",
+  "error": "Not Found",
+  "status": 404,
+  "timestamp": 1457445958771
+}
+2016-03-08 15:06:32,230 DEBUG [main] eu.freme.bpt.Main(94): Commandline successfully parsed!
+2016-03-08 15:06:33,597 ERROR [main] eu.freme.bpt.service.AbstractService(80): Error response from service http://api.freme-project.eu/current/e-translation/tilde: Status 404: Not Found - {
+  "exception": "eu.freme.broker.exception.ExternalServiceFailedException",
+  "path": "//e-translation/tilde",
+  "message": "External service failed with status code 404",
+  "error": "Not Found",
+  "status": 404,
+  "timestamp": 1457446017187
+}
+2016-03-08 15:06:48,759 DEBUG [main] eu.freme.bpt.Main(94): Commandline successfully parsed!
+2016-03-08 15:06:49,904 DEBUG [main] eu.freme.bpt.service.AbstractService(65): Request alright.
+2016-03-08 15:11:08,131 DEBUG [main] eu.freme.bpt.Main(94): Commandline successfully parsed!
+2016-03-08 15:11:09,150 ERROR [main] eu.freme.bpt.service.AbstractService(80): Error response from service http://api.freme-project.eu/current/e-translation/tilde: Status 404: Not Found - {
+  "exception": "eu.freme.broker.exception.ExternalServiceFailedException",
+  "path": "//e-translation/tilde",
+  "message": "External service failed with status code 404",
+  "error": "Not Found",
+  "status": 404,
+  "timestamp": 1457446292739
+}
+2016-03-08 15:13:30,047 DEBUG [main] eu.freme.bpt.Main(94): Commandline successfully parsed!
+2016-03-08 15:16:20,728 DEBUG [main] eu.freme.bpt.Main(94): Commandline successfully parsed!
+2016-03-08 15:16:27,133 ERROR [main] eu.freme.bpt.service.AbstractService(80): Error response from service http://api.freme-project.eu/current/e-translation/tilde: Status 404: Not Found - {
+  "exception": "eu.freme.broker.exception.ExternalServiceFailedException",
+  "path": "//e-translation/tilde",
+  "message": "External service failed with status code 404",
+  "error": "Not Found",
+  "status": 404,
+  "timestamp": 1457446610717
+}
+2016-03-08 15:16:40,940 DEBUG [main] eu.freme.bpt.Main(94): Commandline successfully parsed!
+2016-03-08 15:17:06,321 DEBUG [main] eu.freme.bpt.Main(94): Commandline successfully parsed!
+2016-03-08 15:17:07,494 ERROR [main] eu.freme.bpt.service.AbstractService(80): Error response from service http://api.freme-project.eu/current/e-translation/tilde: Status 404: Not Found - {
+  "exception": "eu.freme.broker.exception.ExternalServiceFailedException",
+  "path": "//e-translation/tilde",
+  "message": "External service failed with status code 404",
+  "error": "Not Found",
+  "status": 404,
+  "timestamp": 1457446651080
+}
+2016-03-08 15:17:12,468 DEBUG [main] eu.freme.bpt.Main(94): Commandline successfully parsed!
+2016-03-08 15:17:56,156 DEBUG [main] eu.freme.bpt.Main(94): Commandline successfully parsed!
+2016-03-08 15:18:04,347 DEBUG [main] eu.freme.bpt.service.AbstractService(65): Request alright.

@@ -65,7 +65,10 @@ public class Main {
 		/////// Service specific options ///////
 		Option sourceLang = Option.builder("s").longOpt("source-lang").hasArg().argName("LANGUAGE").desc("The source language of the input document(s)").build();
 		Option targetLang = Option.builder("t").longOpt("target-lang").hasArg().argName("LANGUAGE").desc("The target language of the output document(s)").build();
-		options.addOption(sourceLang).addOption(targetLang);
+		Option domain = Option.builder("d").longOpt("domain").hasArg().argName("DOMAIN").desc("The domain of the translation system.").required(false).build();
+		Option key = Option.builder("k").longOpt("key").hasArg().argName("KEY").desc("A private key to access private and not publicly available translation systems. Key can be created by contacting Tilde team. Optional, if omitted then translates with public systems.").required(false).build();
+		Option system = Option.builder().longOpt("system").hasArg().argName("SYSTEM").desc("ID of the translation system to be used. Overwrites source-lang, target-lang and domain.").required(false).build();
+		options.addOption(sourceLang).addOption(targetLang).addOption(domain).addOption(key).addOption(system);
 		// TODO
 
 		String service = serviceAndArgs.getName();

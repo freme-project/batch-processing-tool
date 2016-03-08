@@ -33,6 +33,9 @@ public class Configuration {
 	private final Format outFormat;
 	private final String sourceLang;
 	private final String targetLang;
+	private final String domain;
+	private final String key;
+	private final String system;
 
 	private final Map<String, String> serviceToEndpoint;
 
@@ -42,13 +45,16 @@ public class Configuration {
 		Format inFormat = commandLine.hasOption('f') ? Format.valueOf(commandLine.getOptionValue('f')) : Format.turtle;
 		Format outFormat = commandLine.hasOption('o') ? Format.valueOf(commandLine.getOptionValue('o')) : Format.turtle;
 		String sourceLang = commandLine.getOptionValue('s', "en");
-		String targetLang = commandLine.getOptionValue('t', "en");
+		String targetLang = commandLine.getOptionValue('t', "de");
+                String domain = commandLine.getOptionValue('d', null);
+                String system = commandLine.getOptionValue("system", null);
+                String key = commandLine.getOptionValue('k', null);                          
 
 		Map<String, String> serviceToEndpoint = new HashMap<>();
 		serviceToEndpoint.put("e-entity", "http://api.freme-project.eu/current/e-entity/freme-ner/documents");
 		serviceToEndpoint.put("e-translate", "http://api.freme-project.eu/current/e-translation/tilde");
 
-		return new Configuration(inputFile, outputDir, inFormat, outFormat, serviceToEndpoint, sourceLang, targetLang);
+		return new Configuration(inputFile, outputDir, inFormat, outFormat, serviceToEndpoint, sourceLang, targetLang, domain, key, system);
 	}
 
 	public Configuration(File inputFile,
@@ -57,7 +63,10 @@ public class Configuration {
 						 Format outFormat,
 						 Map<String, String> serviceToEndpoint,
 						 String sourceLang,
-						 String targetLang) {
+						 String targetLang,
+                                                 String domain,
+                                                 String key,
+                                                 String system) {
 		this.inputFile = inputFile;
 		this.outputDir = outputDir;
 		this.inFormat = inFormat;
@@ -65,6 +74,9 @@ public class Configuration {
 		this.serviceToEndpoint = serviceToEndpoint;
 		this.sourceLang = sourceLang;
 		this.targetLang = targetLang;
+                this.domain = domain;
+                this.key = key;
+                this.system = system;
 	}
 
 	public File getInputFile() {
@@ -93,5 +105,17 @@ public class Configuration {
 
 	public String getTargetLang() {
 		return targetLang;
+	}
+        
+        public String getDomain() {
+		return domain;
+	}
+        
+        public String getKey() {
+		return key;
+	}
+        
+        public String getSystem() {
+		return system;
 	}
 }
