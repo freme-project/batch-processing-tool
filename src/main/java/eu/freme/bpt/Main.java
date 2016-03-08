@@ -2,8 +2,11 @@ package eu.freme.bpt;
 
 import com.mashape.unirest.http.Unirest;
 import eu.freme.bpt.common.Configuration;
+import eu.freme.bpt.io.IO;
 import eu.freme.bpt.io.IOIterator;
 import eu.freme.bpt.io.IteratorFactory;
+import eu.freme.bpt.service.ETranslate;
+import eu.freme.bpt.service.Service;
 import eu.freme.bpt.util.Pair;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
@@ -55,13 +58,13 @@ public class Main {
 				.addOption(outputOption);
 
 		/////// Common service options ///////
-		Option informatOption = Option.builder("f").longOpt("informat").argName("FORMAT").desc("The format of the input document(s). Defaults to 'turtle'").build();
-		Option outformatOption = Option.builder("o").longOpt("outformat").argName("FORMAT").desc("The desired output format of the service. Defaults to 'turtle'").build();
+		Option informatOption = Option.builder("f").longOpt("informat").argName("FORMAT").desc("The format of the input document(s). Defaults to 'turtle'").hasArg().build();
+		Option outformatOption = Option.builder("o").longOpt("outformat").argName("FORMAT").desc("The desired output format of the service. Defaults to 'turtle'").hasArg().build();
 		options.addOption(informatOption).addOption(outformatOption);
 
 		/////// Service specific options ///////
-		Option sourceLang = Option.builder("s").longOpt("source-lang").argName("LANGUAGE").desc("The source language of the input document(s)").build();
-		Option targetLang = Option.builder("t").longOpt("target-lang").argName("LANGUAGE").desc("The target language of the output document(s)").build();
+		Option sourceLang = Option.builder("s").longOpt("source-lang").hasArg().argName("LANGUAGE").desc("The source language of the input document(s)").build();
+		Option targetLang = Option.builder("t").longOpt("target-lang").hasArg().argName("LANGUAGE").desc("The target language of the output document(s)").build();
 		options.addOption(sourceLang).addOption(targetLang);
 		// TODO
 
@@ -89,10 +92,26 @@ public class Main {
 
 		Configuration configuration = Configuration.create(commandLine);
 
-		// Create an IOIterator. This will be used to iterate over the input source(s)
+		// Iterate over the input source(s)
+		// TODO: services can be put on an ExecutorService (thread pool)
 		IOIterator ioIterator;
 		try {
 			ioIterator = IteratorFactory.create(configuration);
+			while (ioIterator.hasNext()) {
+				IO io = ioIterator.next();
+				Service eService = null;
+				switch (service) {
+					case "e-translate":
+						eService = new ETranslate(io.getInputStream(), io.getOutputStream(), configuration);
+						break;
+					default:
+						logger.warn("Unknown service {}. Skipping!", service);
+						break;
+				}
+				if (eService != null) {
+					eService.run();
+				}
+			}
 			System.out.println();
 		} catch (Exception e) {
 			logger.error("Cannot handle input or output. Reason: ", e);

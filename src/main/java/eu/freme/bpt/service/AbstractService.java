@@ -3,7 +3,6 @@ package eu.freme.bpt.service;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import eu.freme.bpt.common.Configuration;
-import eu.freme.bpt.common.Format;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +33,7 @@ import java.util.Map;
  * Some common logic for e-services.
  *
  */
-public class AbstractService implements Runnable {	// TODO: change in Callable, because we need to check status.
+public abstract class AbstractService implements Service {
 	private static Logger logger = LoggerFactory.getLogger(AbstractService.class);
 
 	private final InputStream inputStream;
@@ -43,16 +42,6 @@ public class AbstractService implements Runnable {	// TODO: change in Callable, 
 
 	private final Map<String, String> headers;
 	protected final Map<String, Object> parameters;
-
-	public AbstractService(String endpoint, InputStream inputStream, OutputStream outputStream, Format inFormat, Format outFormat) {
-		this.endpoint = endpoint;
-		this.inputStream = inputStream;
-		this.outputStream = outputStream;
-		headers = new HashMap<>(3);
-		headers.put("accept", outFormat.getMimeType());
-		headers.put("content-type", inFormat.getMimeType());
-		parameters = new HashMap<>(3);
-	}
 
 	public AbstractService(final String serviceName, final InputStream inputStream, final OutputStream outputStream, final Configuration configuration) {
 		this.endpoint = configuration.getEndpoint(serviceName);
