@@ -54,7 +54,7 @@ public class AbstractServiceTest {
 		);
 
 		eTranslate.run();
-		System.out.println("translation: " + outputStream.toString());
+		System.out.println("translation: " + outputStream.toString(StandardCharsets.UTF_8.name()));
 
 	}
 
