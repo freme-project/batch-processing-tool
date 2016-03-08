@@ -40,6 +40,9 @@ public class Configuration {
 	private final String domain;
 	private final String key;
 	private final String system;
+	private final String language;
+	private final String dataset;
+	private final String mode;
 
 	private final Map<String, String> serviceToEndpoint;
 
@@ -52,7 +55,10 @@ public class Configuration {
 		String targetLang = commandLine.getOptionValue('t', "de");
                 String domain = commandLine.getOptionValue('d', null);
                 String system = commandLine.getOptionValue("system", null);
-                String key = commandLine.getOptionValue('k', null);                          
+                String key = commandLine.getOptionValue('k', null);                        
+                String language = commandLine.getOptionValue("language", "en");                        
+                String dataset = commandLine.getOptionValue("dataset", "dbpedia");                        
+                String mode = commandLine.getOptionValue("mode", "all");                        
 
 		Properties properties = new Properties();
 		try (InputStream propertiesStream = Configuration.class.getResourceAsStream("/bpt.properties")) {
@@ -72,7 +78,7 @@ public class Configuration {
         serviceToEndpoint.put("e-translate", properties.getProperty("e-translate"));
         serviceToEndpoint.put("pipelining", properties.getProperty("pipelining"));
 
-		return new Configuration(inputFile, outputDir, inFormat, outFormat, serviceToEndpoint, sourceLang, targetLang, domain, key, system);
+		return new Configuration(inputFile, outputDir, inFormat, outFormat, serviceToEndpoint, sourceLang, targetLang, domain, key, system, language, dataset, mode);
 	}
 
 	public Configuration(File inputFile,
@@ -84,7 +90,10 @@ public class Configuration {
 						 String targetLang,
                                                  String domain,
                                                  String key,
-                                                 String system) {
+                                                 String system,
+                                                 String language,
+                                                 String dataset,
+                                                 String mode) {
 		this.inputFile = inputFile;
 		this.outputDir = outputDir;
 		this.inFormat = inFormat;
@@ -95,6 +104,9 @@ public class Configuration {
                 this.domain = domain;
                 this.key = key;
                 this.system = system;
+                this.language = language;
+                this.dataset = dataset;
+                this.mode = mode;
 	}
 
 	public File getInputFile() {
@@ -136,4 +148,16 @@ public class Configuration {
         public String getSystem() {
 		return system;
 	}
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public String getDataset() {
+        return dataset;
+    }
+
+    public String getMode() {
+        return mode;
+    }
 }

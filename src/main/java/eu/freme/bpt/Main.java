@@ -5,6 +5,7 @@ import eu.freme.bpt.common.Configuration;
 import eu.freme.bpt.io.IO;
 import eu.freme.bpt.io.IOIterator;
 import eu.freme.bpt.io.IteratorFactory;
+import eu.freme.bpt.service.EEntity;
 import eu.freme.bpt.service.ETranslate;
 import eu.freme.bpt.service.Service;
 import eu.freme.bpt.util.Pair;
@@ -71,7 +72,12 @@ public class Main {
 		Option key = Option.builder("k").longOpt("key").hasArg().argName("KEY").desc("A private key to access private and not publicly available translation systems. Key can be created by contacting Tilde team. Optional, if omitted then translates with public systems.").required(false).build();
 		Option system = Option.builder().longOpt("system").hasArg().argName("SYSTEM").desc("ID of the translation system to be used. Overwrites source-lang, target-lang and domain.").required(false).build();
 		options.addOption(sourceLang).addOption(targetLang).addOption(domain).addOption(key).addOption(system);
-		// TODO
+                //e-entity
+                Option language = Option.builder("l").longOpt("language").hasArg().argName("LANGUAGE").desc("The source language of the input document(s)").required(false).build();
+                Option dataset = Option.builder().longOpt("dataset").hasArg().argName("DATASET").desc("The dataset used for entity linking which includes a list of entites and associated labels.").required(false).build();
+                Option mode = Option.builder().longOpt("mode").hasArg().argName("MODE").desc("This parameter allows to produce only partly results of named entity recognition.").required(false).build();
+                options.addOption(language).addOption(dataset).addOption(mode);	
+                // TODO
 
 		String service = serviceAndArgs.getName();
 		// TODO: map service on service endpoint using the properties
@@ -107,6 +113,9 @@ public class Main {
 				switch (service) {
 					case "e-translate":
 						eService = new ETranslate(io.getInputStream(), io.getOutputStream(), configuration);
+						break;
+                                        case "e-entity":
+						eService = new EEntity(io.getInputStream(), io.getOutputStream(), configuration);
 						break;
 					default:
 						logger.warn("Unknown service {}. Skipping!", service);

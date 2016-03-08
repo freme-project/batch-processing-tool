@@ -39,7 +39,7 @@ public class AbstractServiceTest {
 		ByteArrayBuffer outputStream = new ByteArrayBuffer();
 
 		Configuration configuration = new Configuration(null, null, Format.text, Format.turtle,
-				Collections.singletonMap("e-translate", "http://api.freme-project.eu/current/e-translation/tilde"), "en", "de", null, null, null);
+				Collections.singletonMap("e-translate", "http://api.freme-project.eu/current/e-translation/tilde"), "en", "de", null, null, null, null, null, null);
 
 		ETranslate eTranslate = new ETranslate (
 				inputStream,
