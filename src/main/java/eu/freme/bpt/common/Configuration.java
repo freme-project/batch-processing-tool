@@ -3,8 +3,12 @@ package eu.freme.bpt.common;
 import org.apache.commons.cli.CommandLine;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
@@ -39,7 +43,7 @@ public class Configuration {
 
 	private final Map<String, String> serviceToEndpoint;
 
-	public static Configuration create(CommandLine commandLine) {
+	public static Configuration create(CommandLine commandLine) throws IOException {
 		File inputFile = commandLine.hasOption("if") ? new File(commandLine.getOptionValue("if")) : null;
 		File outputDir = commandLine.hasOption("od") ? new File(commandLine.getOptionValue("od")) : null;
 		Format inFormat = commandLine.hasOption('f') ? Format.valueOf(commandLine.getOptionValue('f')) : Format.turtle;
@@ -50,9 +54,23 @@ public class Configuration {
                 String system = commandLine.getOptionValue("system", null);
                 String key = commandLine.getOptionValue('k', null);                          
 
+		Properties properties = new Properties();
+		try (InputStream propertiesStream = Configuration.class.getResourceAsStream("/bpt.properties")) {
+			properties.load(propertiesStream);
+		}
+		if (commandLine.hasOption("prop")) {
+			try (InputStream propertiesStream = new FileInputStream(commandLine.getOptionValue("prop"))) {
+				properties.load(propertiesStream);
+			}
+		}
+
 		Map<String, String> serviceToEndpoint = new HashMap<>();
-		serviceToEndpoint.put("e-entity", "http://api.freme-project.eu/current/e-entity/freme-ner/documents");
-		serviceToEndpoint.put("e-translate", "http://api.freme-project.eu/current/e-translation/tilde");
+        serviceToEndpoint.put("e-entity", properties.getProperty("e-entity"));
+        serviceToEndpoint.put("e-link", properties.getProperty("e-link"));
+        serviceToEndpoint.put("e-publishing", properties.getProperty("e-publishing"));
+        serviceToEndpoint.put("e-terminology", properties.getProperty("e-terminology"));
+        serviceToEndpoint.put("e-translate", properties.getProperty("e-translate"));
+        serviceToEndpoint.put("pipelining", properties.getProperty("pipelining"));
 
 		return new Configuration(inputFile, outputDir, inFormat, outFormat, serviceToEndpoint, sourceLang, targetLang, domain, key, system);
 	}
