@@ -3,6 +3,8 @@ package eu.freme.bpt.common;
 import org.apache.commons.cli.CommandLine;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Copyright (C) 2016 Agro-Know, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
@@ -29,21 +31,40 @@ public class Configuration {
 	private final File outputDir;
 	private final Format inFormat;
 	private final Format outFormat;
+	private final String sourceLang;
+	private final String targetLang;
+
+	private final Map<String, String> serviceToEndpoint;
 
 	public static Configuration create(CommandLine commandLine) {
 		File inputFile = commandLine.hasOption("if") ? new File(commandLine.getOptionValue("if")) : null;
 		File outputDir = commandLine.hasOption("od") ? new File(commandLine.getOptionValue("od")) : null;
 		Format inFormat = commandLine.hasOption('f') ? Format.valueOf(commandLine.getOptionValue('f')) : Format.turtle;
 		Format outFormat = commandLine.hasOption('o') ? Format.valueOf(commandLine.getOptionValue('o')) : Format.turtle;
+		String sourceLang = commandLine.getOptionValue('s', "en");
+		String targetLang = commandLine.getOptionValue('t', "en");
 
-		return new Configuration(inputFile, outputDir, inFormat, outFormat);
+		Map<String, String> serviceToEndpoint = new HashMap<>();
+		serviceToEndpoint.put("e-entity", "http://api.freme-project.eu/current/e-entity/freme-ner/documents");
+		serviceToEndpoint.put("e-translate", "http://api.freme-project.eu/current/e-translation/tilde");
+
+		return new Configuration(inputFile, outputDir, inFormat, outFormat, serviceToEndpoint, sourceLang, targetLang);
 	}
 
-	private Configuration(File inputFile, File outputDir, Format inFormat, Format outFormat) {
+	public Configuration(File inputFile,
+						 File outputDir,
+						 Format inFormat,
+						 Format outFormat,
+						 Map<String, String> serviceToEndpoint,
+						 String sourceLang,
+						 String targetLang) {
 		this.inputFile = inputFile;
 		this.outputDir = outputDir;
 		this.inFormat = inFormat;
 		this.outFormat = outFormat;
+		this.serviceToEndpoint = serviceToEndpoint;
+		this.sourceLang = sourceLang;
+		this.targetLang = targetLang;
 	}
 
 	public File getInputFile() {
@@ -60,5 +81,17 @@ public class Configuration {
 
 	public Format getOutFormat() {
 		return outFormat;
+	}
+
+	public String getEndpoint(final String service) {
+		return serviceToEndpoint.get(service);
+	}
+
+	public String getSourceLang() {
+		return sourceLang;
+	}
+
+	public String getTargetLang() {
+		return targetLang;
 	}
 }

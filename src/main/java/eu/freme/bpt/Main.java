@@ -1,5 +1,6 @@
 package eu.freme.bpt;
 
+import com.mashape.unirest.http.Unirest;
 import eu.freme.bpt.common.Configuration;
 import eu.freme.bpt.io.IOIterator;
 import eu.freme.bpt.io.IteratorFactory;
@@ -8,6 +9,7 @@ import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -58,6 +60,9 @@ public class Main {
 		options.addOption(informatOption).addOption(outformatOption);
 
 		/////// Service specific options ///////
+		Option sourceLang = Option.builder("s").longOpt("source-lang").argName("LANGUAGE").desc("The source language of the input document(s)").build();
+		Option targetLang = Option.builder("t").longOpt("target-lang").argName("LANGUAGE").desc("The target language of the output document(s)").build();
+		options.addOption(sourceLang).addOption(targetLang);
 		// TODO
 
 		String service = serviceAndArgs.getName();
@@ -92,6 +97,12 @@ public class Main {
 		} catch (Exception e) {
 			logger.error("Cannot handle input or output. Reason: ", e);
 			System.exit(2);
+		}
+
+		try {
+			Unirest.shutdown();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
