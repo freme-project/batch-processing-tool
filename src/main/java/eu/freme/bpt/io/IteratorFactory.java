@@ -1,7 +1,7 @@
 package eu.freme.bpt.io;
 
+import eu.freme.bpt.common.Configuration;
 import eu.freme.bpt.common.Format;
-import org.apache.commons.cli.CommandLine;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,17 +28,12 @@ import java.io.IOException;
  */
 public class IteratorFactory {
 
-	public static IOIterator create(final CommandLine commandLine) throws IOException, IOCombinationNotPossibleException {
-		Format outFormat;
-		if (commandLine.hasOption('o')) {
-			outFormat = Format.valueOf(commandLine.getOptionValue('o').toLowerCase());
-		} else {
-			outFormat = Format.turtle;	// the default
-		}
+	public static IOIterator create(final Configuration configuration) throws IOException, IOCombinationNotPossibleException {
+		Format outFormat = configuration.getOutFormat();
+		File outputDir = configuration.getOutputDir();
+		File inputFile = configuration.getInputFile();
 
-		File outputDir = null;
-		if (commandLine.hasOption("od")) {
-			outputDir = new File(commandLine.getOptionValue("od"));
+		if (outputDir != null) {
 			if (!outputDir.exists()) {
 				if (!outputDir.mkdirs()) {
 					throw new IOException("Could not create output directory " + outputDir);
@@ -49,17 +44,16 @@ public class IteratorFactory {
 				}
 			}
 		}
-		if (commandLine.hasOption("if")) {
-			File input = new File(commandLine.getOptionValue("if"));
-			if (input.isFile()) {
+		if (inputFile != null) {
+			if (inputFile.isFile()) {
 				if (outputDir != null) {
-					return new SingleFileIOIterator(input, outputDir, outFormat);
+					return new SingleFileIOIterator(inputFile, outputDir, outFormat);
 				} else {
-					return new SingleFileIOIterator(input);
+					return new SingleFileIOIterator(inputFile);
 				}
 			} else {
 				if (outputDir != null) {
-					return new DirectoryIOIterator(input, outputDir, outFormat);
+					return new DirectoryIOIterator(inputFile, outputDir, outFormat);
 				} else {
 					throw new IOCombinationNotPossibleException("If the input is a directory, the output should be a directory as well." +
 							" Check the -od option!");

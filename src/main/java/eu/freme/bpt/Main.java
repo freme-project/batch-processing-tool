@@ -1,5 +1,6 @@
 package eu.freme.bpt;
 
+import eu.freme.bpt.common.Configuration;
 import eu.freme.bpt.io.IOIterator;
 import eu.freme.bpt.io.IteratorFactory;
 import eu.freme.bpt.util.Pair;
@@ -60,6 +61,7 @@ public class Main {
 		// TODO
 
 		String service = serviceAndArgs.getName();
+		// TODO: map service on service endpoint using the properties
 
 		CommandLine commandLine = null;
 		int exitValue;
@@ -80,10 +82,12 @@ public class Main {
 
 		logger.debug("Commandline successfully parsed!");
 
+		Configuration configuration = Configuration.create(commandLine);
+
 		// Create an IOIterator. This will be used to iterate over the input source(s)
 		IOIterator ioIterator;
 		try {
-			ioIterator = IteratorFactory.create(commandLine);
+			ioIterator = IteratorFactory.create(configuration);
 			System.out.println();
 		} catch (Exception e) {
 			logger.error("Cannot handle input or output. Reason: ", e);
