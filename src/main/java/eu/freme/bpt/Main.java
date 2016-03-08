@@ -17,6 +17,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
@@ -102,10 +105,12 @@ public class Main {
 		logger.debug("Commandline successfully parsed!");
 
 		// Iterate over the input source(s)
-		// TODO: services can be put on an ExecutorService (thread pool)
 		IOIterator ioIterator;
 		try {
 			Configuration configuration = Configuration.create(commandLine);
+
+			ExecutorService executorService = Executors.newFixedThreadPool(configuration.getThreads());
+
 			ioIterator = IteratorFactory.create(configuration);
 			while (ioIterator.hasNext()) {
 				IO io = ioIterator.next();
@@ -114,7 +119,7 @@ public class Main {
 					case "e-translate":
 						eService = new ETranslate(io.getInputStream(), io.getOutputStream(), configuration);
 						break;
-                                        case "e-entity":
+					case "e-entity":
 						eService = new EEntity(io.getInputStream(), io.getOutputStream(), configuration);
 						break;
 					default:
@@ -122,10 +127,11 @@ public class Main {
 						break;
 				}
 				if (eService != null) {
-					eService.run();
+					executorService.submit(eService);
 				}
 			}
-			System.out.println();
+			executorService.shutdown();
+			executorService.awaitTermination(1, TimeUnit.DAYS);
 		} catch (Exception e) {
 			logger.error("Cannot handle input or output. Reason: ", e);
 			System.exit(2);
