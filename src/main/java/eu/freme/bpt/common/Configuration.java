@@ -63,14 +63,6 @@ public class Configuration {
 			}
 		}
 
-		Map<String, String> serviceToEndpoint = new HashMap<>();
-		serviceToEndpoint.put("e-entity", properties.getProperty("e-entity"));
-		serviceToEndpoint.put("e-link", properties.getProperty("e-link"));
-		serviceToEndpoint.put("e-publishing", properties.getProperty("e-publishing"));
-		serviceToEndpoint.put("e-terminology", properties.getProperty("e-terminology"));
-		serviceToEndpoint.put("e-translate", properties.getProperty("e-translate"));
-		serviceToEndpoint.put("pipelining", properties.getProperty("pipelining"));
-
 		return new Configuration(inputFile, outputDir, inFormat, outFormat, sourceLang, targetLang, domain, key, system, properties);
 	}
 
