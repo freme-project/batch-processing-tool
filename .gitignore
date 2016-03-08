@@ -15,3 +15,4 @@ nbactions-e-translation (key).xml
 nbactions-e-translation (system).xml
 nbactions-e-Entity (basic).xml
 
+src/test/resources/scripts/logs
