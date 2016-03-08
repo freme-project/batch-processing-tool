@@ -14,11 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -110,6 +109,7 @@ public class Main {
 			Configuration configuration = Configuration.create(commandLine);
 
 			ExecutorService executorService = Executors.newFixedThreadPool(configuration.getThreads());
+			Set<Future<Boolean>> tasks = new HashSet<>();	// TODO: use this set of tasks to handle according to the failure policy.
 
 			ioIterator = IteratorFactory.create(configuration);
 			while (ioIterator.hasNext()) {
@@ -127,7 +127,7 @@ public class Main {
 						break;
 				}
 				if (eService != null) {
-					executorService.submit(eService);
+					tasks.add(executorService.submit(eService));
 				}
 			}
 			executorService.shutdown();

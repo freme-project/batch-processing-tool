@@ -55,8 +55,8 @@ public abstract class AbstractService implements Service {
 
 
 	@Override
-	public void run() {
-		// TODO set timeout configurable?
+	public Boolean call() {
+		boolean success = false;
 		Unirest.setTimeouts(30000, 300000);
 		try {
 			byte[] input = IOUtils.toByteArray(inputStream);
@@ -66,6 +66,7 @@ public abstract class AbstractService implements Service {
 				InputStream responseInput = response.getBody();
 				try {
 					IOUtils.copy(responseInput, outputStream);
+					success = true;
 				} catch (IOException e) {
 					logger.error("Error while writing response.", e);
 				} finally {
@@ -89,5 +90,6 @@ public abstract class AbstractService implements Service {
 				// not important
 			}
 		}
+		return success;
 	}
 }

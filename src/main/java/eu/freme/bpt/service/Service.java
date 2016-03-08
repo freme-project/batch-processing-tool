@@ -1,5 +1,7 @@
 package eu.freme.bpt.service;
 
+import java.util.concurrent.Callable;
+
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
  * Institut für Angewandte Informatik e. V. an der Universität Leipzig,
@@ -20,6 +22,5 @@ package eu.freme.bpt.service;
  * Represents the e-translate service
  *
  */
-public interface Service extends Runnable {
-	// TODO: extend Callable, because we need to check status.
+public interface Service extends Callable<Boolean> {
 }
