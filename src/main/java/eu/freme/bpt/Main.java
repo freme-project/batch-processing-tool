@@ -39,7 +39,7 @@ public class Main {
 	public static final Logger logger = LoggerFactory.getLogger(Main.class);
 
 	public static void main(String[] args) {
-		final List<String> services = Arrays.asList("e-entity", "e-translate");	// TODO add rest
+		final List<String> services = Arrays.asList("e-entity", "e-link", "e-publishing", "e-terminology", "e-translate", "pipelining");
 		Pair<String, String[]> serviceAndArgs = extractService(args, services);
 
 		// create options that will be parsed from the args

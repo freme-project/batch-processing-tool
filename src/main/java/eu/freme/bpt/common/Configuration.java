@@ -63,6 +63,7 @@ public class Configuration {
         serviceToEndpoint.put("e-link", properties.getProperty("e-link"));
         serviceToEndpoint.put("e-publishing", properties.getProperty("e-publishing"));
         serviceToEndpoint.put("e-terminology", properties.getProperty("e-terminology"));
+        serviceToEndpoint.put("e-translate", properties.getProperty("e-translate"));
         serviceToEndpoint.put("pipelining", properties.getProperty("pipelining"));
 
 		return new Configuration(inputFile, outputDir, inFormat, outFormat, serviceToEndpoint, sourceLang, targetLang);
