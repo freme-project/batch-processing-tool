@@ -7,6 +7,7 @@ import eu.freme.bpt.io.IOIterator;
 import eu.freme.bpt.io.IteratorFactory;
 import eu.freme.bpt.service.EEntity;
 import eu.freme.bpt.service.ELink;
+import eu.freme.bpt.service.ETerminology;
 import eu.freme.bpt.service.ETranslate;
 import eu.freme.bpt.service.Service;
 import eu.freme.bpt.util.Pair;
@@ -46,7 +47,7 @@ public class Main {
 
         String service = serviceAndArgs.getName();
 
-		// create options that will be parsed from the args
+        // create options that will be parsed from the args
         /////// General BPT options ///////
         Option helpOption = new Option("h", "help", false, "Prints this message");
         Option inputOption = Option.builder("if").longOpt("input-file").argName("input file")
@@ -67,17 +68,25 @@ public class Main {
         Option outformatOption = Option.builder("o").longOpt("outformat").argName("FORMAT").desc("The desired output format of the service. Defaults to 'turtle'").hasArg().build();
         options.addOption(informatOption).addOption(outformatOption);
 
+        Class serviceClass = null;
         /////// Service specific options ///////
         if (service != null) {
             switch (service) {
                 case "e-translate":
+                    serviceClass = ETranslate.class;
                     ETranslate.addOptions(options);
                     break;
                 case "e-entity":
+                    serviceClass = EEntity.class;
                     EEntity.addOptions(options);
                     break;
                 case "e-link":
+                    serviceClass = ELink.class;
                     ELink.addOptions(options);
+                    break;
+                case "e-terminology":
+                    serviceClass = ETerminology.class;
+                    ETerminology.addOptions(options);
                     break;
                 default:
                     logger.warn("Unknown service {}. Skipping!", service);
@@ -87,6 +96,7 @@ public class Main {
             ETranslate.addOptions(options);
             EEntity.addOptions(options);
             ELink.addOptions(options);
+            ETerminology.addOptions(options);
         }
 
         CommandLine commandLine = null;
@@ -111,7 +121,7 @@ public class Main {
         // Iterate over the input source(s)
         IOIterator ioIterator;
         try {
-            Configuration configuration = Configuration.create(commandLine);
+            Configuration configuration = Configuration.create(commandLine, serviceClass);
 
             ExecutorService executorService = Executors.newFixedThreadPool(configuration.getThreads());
             Set<Future<Boolean>> tasks = new HashSet<>();
@@ -119,21 +129,8 @@ public class Main {
             ioIterator = IteratorFactory.create(configuration);
             while (ioIterator.hasNext()) {
                 IO io = ioIterator.next();
-                Service eService = null;
-                switch (service) {
-                    case "e-translate":
-                        eService = new ETranslate(io.getInputStream(), io.getOutputStream(), configuration);
-                        break;
-                    case "e-entity":
-                        eService = new EEntity(io.getInputStream(), io.getOutputStream(), configuration);
-                        break;
-                    case "e-link":
-                        eService = new ELink(io.getInputStream(), io.getOutputStream(), configuration);
-                        break;
-                    default:
-                        logger.warn("Unknown service {}. Skipping!", service);
-                        break;
-                }
+                Service eService = (Service) serviceClass.getConstructors()[0].newInstance(io.getInputStream(), io.getOutputStream(), configuration);
+
                 if (eService != null) {
                     tasks.add(executorService.submit(eService));
                 }

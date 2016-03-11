@@ -28,37 +28,41 @@ import org.apache.commons.cli.Options;
  * Represents the e-translate service
  *
  */
-public class ETranslate extends AbstractService {
+public class ETerminology extends AbstractService {
 
-    public ETranslate(InputStream inputStream, OutputStream outputStream, Configuration configuration) {
-        super("e-translate", inputStream, outputStream, configuration);
+    public ETerminology(InputStream inputStream, OutputStream outputStream, Configuration configuration) {
+        super("e-terminology", inputStream, outputStream, configuration);
         parameters.put("source-lang", configuration.getSourceLang());
         parameters.put("target-lang", configuration.getTargetLang());
-
-        if (configuration.getDomain() != null) {
-            parameters.put("domain", configuration.getDomain());
+        parameters.put("mode", configuration.getMode());
+        
+        if (configuration.getCollection() != null) {
+            parameters.put("collection", configuration.getCollection());
         }
-
+        
         if (configuration.getKey() != null) {
             parameters.put("key", configuration.getKey());
         }
-
-        if (configuration.getSystem() != null) {
-            parameters.put("system", configuration.getSystem());
+        
+        if (configuration.getDomain() != null) {
+            parameters.put("domain", configuration.getDomain());
         }
     }
 
     public static void addOptions(Options options) {
         Option sourceLang = Option.builder("s").longOpt("source-lang").hasArg().argName("LANGUAGE").desc("The source language of the input document(s)").build();
         Option targetLang = Option.builder("t").longOpt("target-lang").hasArg().argName("LANGUAGE").desc("The target language of the output document(s)").build();
-        Option domain = Option.builder("d").longOpt("domain").hasArg().argName("DOMAIN").desc("The domain of the translation system.").required(false).build();
-        Option key = Option.builder("k").longOpt("key").hasArg().argName("KEY").desc("A private key to access private and not publicly available translation systems. Key can be created by contacting Tilde team. Optional, if omitted then translates with public systems.").required(false).build();
-        Option system = Option.builder().longOpt("system").hasArg().argName("SYSTEM").desc("ID of the translation system to be used. Overwrites source-lang, target-lang and domain.").required(false).build();
-        options.addOption(sourceLang).addOption(targetLang).addOption(domain).addOption(key).addOption(system);
+        Option collection = Option.builder("c").longOpt("collection").hasArg().argName("ID").desc("Collection ID from https://term.tilde.com portal").required(false).build();
+        Option domain = Option.builder("d").longOpt("domain").hasArg().argName("DOMAIN").desc("It filters out by domain proposed terms").required(false).build();
+        Option key = Option.builder("k").longOpt("key").hasArg().argName("KEY").desc("A private key to access private and not publicly available translation systems.").required(false).build();
+        Option mode = Option.builder().longOpt("mode").hasArg().argName("MODE").desc("Whether the result must contain full terminology information or only term annotations with references to the full information").required(false).build();
+        options.addOption(collection).addOption(key).addOption(mode).addOption(domain).addOption(sourceLang).addOption(targetLang);
     }
-    
+
     public static String getDefaultValue(String option) {
         switch (option) {
+            case "mode":
+                return "full";
             case "source-lang":
                 return "en";
             case "target-lang":

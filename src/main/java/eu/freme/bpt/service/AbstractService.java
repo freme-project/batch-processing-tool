@@ -53,7 +53,6 @@ public abstract class AbstractService implements Service {
 		parameters = new HashMap<>(3);
 	}
 
-
 	@Override
 	public Boolean call() {
 		boolean success = false;

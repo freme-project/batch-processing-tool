@@ -43,4 +43,17 @@ public class EEntity extends AbstractService {
         Option mode = Option.builder().longOpt("mode").hasArg().argName("MODE").desc("This parameter allows to produce only partly results of named entity recognition.").required(false).build();
         options.addOption(language).addOption(dataset).addOption(mode);
     }
+
+    public static String getDefaultValue(String option) {
+        switch (option) {
+            case "mode":
+                return "all";
+            case "language":
+                return "en";
+            case "dataset":
+                return "dbpedia";
+            default:
+                return null;
+        }
+    }
 }

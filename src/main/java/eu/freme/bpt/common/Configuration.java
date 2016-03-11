@@ -6,9 +6,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche
@@ -46,36 +50,46 @@ public class Configuration {
     private final String dataset;
     private final String mode;
     private final String templateID;
+    private final String collection;
 
     private final Properties properties;
     private final Map<String, String> serviceToEndpoint;
 
-    public static Configuration create(CommandLine commandLine) throws IOException {
-        File inputFile = commandLine.hasOption("if") ? new File(commandLine.getOptionValue("if")) : null;
-        File outputDir = commandLine.hasOption("od") ? new File(commandLine.getOptionValue("od")) : null;
-        Format inFormat = commandLine.hasOption('f') ? Format.valueOf(commandLine.getOptionValue('f')) : Format.turtle;
-        Format outFormat = commandLine.hasOption('o') ? Format.valueOf(commandLine.getOptionValue('o')) : Format.turtle;
-        String sourceLang = commandLine.getOptionValue('s', "en");
-        String targetLang = commandLine.getOptionValue('t', "de");      
-        String domain = commandLine.getOptionValue('d', null);
-        String system = commandLine.getOptionValue("system", null);
-        String key = commandLine.getOptionValue('k', null);
-        String language = commandLine.getOptionValue("language", "en");
-        String dataset = commandLine.getOptionValue("dataset", "dbpedia");
-        String mode = commandLine.getOptionValue("mode", "all");
-        String templateID = commandLine.getOptionValue("templateid", null);
-
-        Properties properties = new Properties();
-        try (InputStream propertiesStream = Configuration.class.getResourceAsStream("/bpt.properties")) {
-            properties.load(propertiesStream);
-        }
-        if (commandLine.hasOption("prop")) {
-            try (InputStream propertiesStream = new FileInputStream(commandLine.getOptionValue("prop"))) {
+    public static Configuration create(CommandLine commandLine, Class serviceClass) throws IOException {
+        try {
+            Method getDefaultValue =  serviceClass.getMethod("getDefaultValue", String.class);
+            
+            File inputFile = commandLine.hasOption("if") ? new File(commandLine.getOptionValue("if")) : null;
+            File outputDir = commandLine.hasOption("od") ? new File(commandLine.getOptionValue("od")) : null;
+            Format inFormat = commandLine.hasOption('f') ? Format.valueOf(commandLine.getOptionValue('f')) : Format.turtle;
+            Format outFormat = commandLine.hasOption('o') ? Format.valueOf(commandLine.getOptionValue('o')) : Format.turtle;
+            String sourceLang = commandLine.getOptionValue('s', (String) getDefaultValue.invoke(null, "source-lang"));
+            String targetLang = commandLine.getOptionValue('t', (String) getDefaultValue.invoke(null, "target-lang"));
+            String domain = commandLine.getOptionValue('d', (String) getDefaultValue.invoke(null, "domain"));
+            String system = commandLine.getOptionValue("system", (String) getDefaultValue.invoke(null,"system"));
+            String key = commandLine.getOptionValue('k', (String) getDefaultValue.invoke(null, "key"));
+            String language = commandLine.getOptionValue("language", (String) getDefaultValue.invoke(null, "language"));
+            String dataset = commandLine.getOptionValue("dataset", (String) getDefaultValue.invoke(null, "dataset"));
+            String mode = commandLine.getOptionValue("mode", (String) getDefaultValue.invoke(null, "mode"));
+            String templateID = commandLine.getOptionValue("templateid", (String) getDefaultValue.invoke(null, "templateid"));
+            String collection = commandLine.getOptionValue('c', (String) getDefaultValue.invoke(null, "collection"));
+            
+            Properties properties = new Properties();
+            try (InputStream propertiesStream = Configuration.class.getResourceAsStream("/bpt.properties")) {
                 properties.load(propertiesStream);
             }
+            if (commandLine.hasOption("prop")) {
+                try (InputStream propertiesStream = new FileInputStream(commandLine.getOptionValue("prop"))) {
+                    properties.load(propertiesStream);
+                }
+            }
+            
+            return new Configuration(inputFile, outputDir, inFormat, outFormat, sourceLang, targetLang, domain, key, system, language, dataset, mode, templateID, collection, properties);
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
+            Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        return new Configuration(inputFile, outputDir, inFormat, outFormat, sourceLang, targetLang, domain, key, system, language, dataset, mode, templateID, properties);
+        return null;
     }
 
     public Configuration(File inputFile,
@@ -91,6 +105,7 @@ public class Configuration {
             String dataset,
             String mode,
             String templateID,
+            String collection,
             Properties properties) {
         this.inputFile = inputFile;
         this.outputDir = outputDir;
@@ -105,6 +120,7 @@ public class Configuration {
         this.dataset = dataset;
         this.mode = mode;
         this.templateID = templateID;
+        this.collection = collection;
         this.properties = properties;
 
         serviceToEndpoint = new HashMap<>();
@@ -182,5 +198,9 @@ public class Configuration {
     
     public String getTemplateID() {
         return templateID;
+    }
+    
+    public String getCollection() {
+        return collection;
     }
 }

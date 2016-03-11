@@ -39,4 +39,8 @@ public class ELink extends AbstractService {
         Option templateID = Option.builder().longOpt("templateid").hasArg().argName("ID").desc("This parameter sets the ID of the template to be used.").required(true).build();
         options.addOption(templateID);
     }
+
+    public static String getDefaultValue(String option) {
+        return null;
+    }
 }
