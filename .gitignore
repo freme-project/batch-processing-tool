@@ -16,3 +16,5 @@ nbactions-e-translation (system).xml
 nbactions-e-Entity (basic).xml
 
 src/test/resources/scripts/logs
+nbactions-help.xml
+nbactions-e-Link.xml

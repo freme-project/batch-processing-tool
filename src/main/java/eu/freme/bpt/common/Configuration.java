@@ -45,6 +45,7 @@ public class Configuration {
     private final String language;
     private final String dataset;
     private final String mode;
+    private final String templateID;
 
     private final Properties properties;
     private final Map<String, String> serviceToEndpoint;
@@ -62,6 +63,7 @@ public class Configuration {
         String language = commandLine.getOptionValue("language", "en");
         String dataset = commandLine.getOptionValue("dataset", "dbpedia");
         String mode = commandLine.getOptionValue("mode", "all");
+        String templateID = commandLine.getOptionValue("templateid", null);
 
         Properties properties = new Properties();
         try (InputStream propertiesStream = Configuration.class.getResourceAsStream("/bpt.properties")) {
@@ -73,7 +75,7 @@ public class Configuration {
             }
         }
         
-        return new Configuration(inputFile, outputDir, inFormat, outFormat, sourceLang, targetLang, domain, key, system, language, dataset, mode, properties);
+        return new Configuration(inputFile, outputDir, inFormat, outFormat, sourceLang, targetLang, domain, key, system, language, dataset, mode, templateID, properties);
     }
 
     public Configuration(File inputFile,
@@ -88,6 +90,7 @@ public class Configuration {
             String language,
             String dataset,
             String mode,
+            String templateID,
             Properties properties) {
         this.inputFile = inputFile;
         this.outputDir = outputDir;
@@ -101,6 +104,7 @@ public class Configuration {
         this.language = language;
         this.dataset = dataset;
         this.mode = mode;
+        this.templateID = templateID;
         this.properties = properties;
 
         serviceToEndpoint = new HashMap<>();
@@ -174,5 +178,9 @@ public class Configuration {
 
     public String getPrefix() {
         return properties.getProperty("prefix");
+    }
+    
+    public String getTemplateID() {
+        return templateID;
     }
 }

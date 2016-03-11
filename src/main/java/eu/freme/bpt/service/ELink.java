@@ -28,19 +28,15 @@ import org.apache.commons.cli.Options;
  * Represents the e-translate service
  *
  */
-public class EEntity extends AbstractService {
+public class ELink extends AbstractService {
 
-    public EEntity(InputStream inputStream, OutputStream outputStream, Configuration configuration) {
-        super("e-entity", inputStream, outputStream, configuration);
-        parameters.put("language", configuration.getLanguage());
-        parameters.put("dataset", configuration.getDataset());
-        parameters.put("mode", configuration.getMode());
+    public ELink(InputStream inputStream, OutputStream outputStream, Configuration configuration) {
+        super("e-link", inputStream, outputStream, configuration);
+        parameters.put("templateid", configuration.getTemplateID());
     }
 
     public static void addOptions(Options options) {
-        Option language = Option.builder("l").longOpt("language").hasArg().argName("LANGUAGE").desc("The source language of the input document(s)").required(false).build();
-        Option dataset = Option.builder().longOpt("dataset").hasArg().argName("DATASET").desc("The dataset used for entity linking which includes a list of entites and associated labels.").required(false).build();
-        Option mode = Option.builder().longOpt("mode").hasArg().argName("MODE").desc("This parameter allows to produce only partly results of named entity recognition.").required(false).build();
-        options.addOption(language).addOption(dataset).addOption(mode);
+        Option templateID = Option.builder().longOpt("templateid").hasArg().argName("ID").desc("This parameter sets the ID of the template to be used.").required(true).build();
+        options.addOption(templateID);
     }
 }

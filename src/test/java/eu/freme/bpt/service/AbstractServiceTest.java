@@ -46,7 +46,7 @@ public class AbstractServiceTest {
 			properties.load(propertiesStream);
 		}
 
-		Configuration configuration = new Configuration(null, null, Format.text, Format.turtle, "en", "de", null, null, null, null, null, null, properties);
+		Configuration configuration = new Configuration(null, null, Format.text, Format.turtle, "en", "de", null, null, null, null, null, null, null, properties);
 
 		ETranslate eTranslate = new ETranslate (
 				inputStream,
