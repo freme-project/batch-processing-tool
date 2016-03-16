@@ -24,6 +24,7 @@ public enum Format {
 	text("txt", "text/plain"),
 	turtle("ttl", "text/turtle"),
 	;
+	// TODO: add other formats!
 	private final String fileExtension;
 	private final String mimeType;		// TODO: to mime type object of the HTTP library to be used...
 
