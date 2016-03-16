@@ -5,16 +5,14 @@ import eu.freme.bpt.common.Configuration;
 import eu.freme.bpt.io.IO;
 import eu.freme.bpt.io.IOIterator;
 import eu.freme.bpt.io.IteratorFactory;
-import eu.freme.bpt.service.EEntity;
-import eu.freme.bpt.service.ELink;
-import eu.freme.bpt.service.ETerminology;
-import eu.freme.bpt.service.ETranslate;
-import eu.freme.bpt.service.Service;
+import eu.freme.bpt.service.*;
+import eu.freme.bpt.util.FailurePolicy;
 import eu.freme.bpt.util.Pair;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
@@ -123,6 +121,10 @@ public class Main {
         try {
             Configuration configuration = Configuration.create(commandLine, serviceClass);
 
+			String failureStrategy = configuration.getFailureStrategy();
+			File outputDir = commandLine.hasOption("od") ? new File(commandLine.getOptionValue("od")) : null;
+			FailurePolicy failurePolicy = FailurePolicy.create(failureStrategy, outputDir);
+
             ExecutorService executorService = Executors.newFixedThreadPool(configuration.getThreads());
             Set<Future<Boolean>> tasks = new HashSet<>();
 
@@ -148,7 +150,9 @@ public class Main {
                     }
                     if (!success) {
                         logger.warn("A task failed!");
-                        // TODO: act according to failure policy!
+						if (!failurePolicy.check()) {
+							System.exit(3);
+						}
                     } else {
                         logger.info("Success!");
                     }
