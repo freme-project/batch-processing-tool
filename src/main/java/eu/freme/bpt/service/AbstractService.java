@@ -58,6 +58,7 @@ public abstract class AbstractService implements Service {
 	public void run(final FailurePolicy failurePolicy, int nrThreads) {
 		ExecutorService executorService = Executors.newFixedThreadPool(nrThreads);
 		Set<Future<Boolean>> tasks = new HashSet<>();
+		Unirest.setTimeouts(30000, 300000);	// TODO: configurable?
 		while (ioIterator.hasNext()) {
 			final IO io = ioIterator.next();
 			final InputStream inputStream = io.getInputStream();
@@ -65,7 +66,6 @@ public abstract class AbstractService implements Service {
 
 			tasks.add(executorService.submit(() -> {
 				boolean success = false;
-				Unirest.setTimeouts(30000, 300000);
 				try {
 					byte[] input = IOUtils.toByteArray(inputStream);
 					HttpResponse<InputStream> response = Unirest.post(endpoint).headers(headers).queryString(parameters).body(input).asBinary();
@@ -128,11 +128,16 @@ public abstract class AbstractService implements Service {
 					// not important...
 				}
 			}
-			try {
-				executorService.awaitTermination(1, TimeUnit.DAYS);
-			} catch (InterruptedException e) {
-				logger.warn("Waiting on termination interrupted.");
-			}
+		}
+		try {
+			executorService.awaitTermination(1, TimeUnit.DAYS);
+		} catch (InterruptedException e) {
+			logger.warn("Waiting on termination interrupted.");
+		}
+		try {
+			Unirest.shutdown();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }

@@ -1,6 +1,5 @@
 package eu.freme.bpt;
 
-import com.mashape.unirest.http.Unirest;
 import eu.freme.bpt.config.Configuration;
 import eu.freme.bpt.io.IOIterator;
 import eu.freme.bpt.io.IteratorFactory;
@@ -12,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -186,12 +184,6 @@ public class Main {
         } catch (Exception e) {
             logger.error("Cannot handle input or output. Reason: ", e);
             System.exit(2);
-        }
-
-        try {
-            Unirest.shutdown();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
