@@ -65,15 +65,4 @@ public class ETranslate extends AbstractService {
         Option system = Option.builder().longOpt("system").hasArg().argName("SYSTEM").desc("ID of the translation system to be used. Overwrites source-lang, target-lang and domain.").build();
         options.addOption(sourceLang).addOption(targetLang).addOption(domain).addOption(key).addOption(system);
     }
-    
-    public static String getDefaultValue(String option) {
-        switch (option) {
-            case "source-lang":
-                return "en";
-            case "target-lang":
-                return "de";
-            default:
-                return null;
-        }
-    }
 }

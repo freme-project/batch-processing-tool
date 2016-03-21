@@ -64,24 +64,19 @@ public class Main {
         Option outformatOption = Option.builder("o").longOpt("outformat").argName("FORMAT").desc("The desired output format of the service. Defaults to 'turtle'").hasArg().build();
         options.addOption(informatOption).addOption(outformatOption);
 
-        Class serviceClass = null;
         /////// Service specific options ///////
         if (service != null) {
             switch (service) {
                 case "e-translate":
-                    serviceClass = ETranslate.class;
                     ETranslate.addOptions(options);
                     break;
                 case "e-entity":
-                    serviceClass = EEntity.class;
                     EEntity.addOptions(options);
                     break;
                 case "e-link":
-                    serviceClass = ELink.class;
                     ELink.addOptions(options);
                     break;
                 case "e-terminology":
-                    serviceClass = ETerminology.class;
                     ETerminology.addOptions(options);
                     break;
                 default:
@@ -117,7 +112,7 @@ public class Main {
         // Iterate over the input source(s)
         IOIterator ioIterator;
         try {
-            Configuration configuration = Configuration.create(commandLine, serviceClass);
+            Configuration configuration = Configuration.create(commandLine);
 
 			String failureStrategy = configuration.getFailureStrategy();
 			File outputDir = commandLine.hasOption("od") ? new File(commandLine.getOptionValue("od")) : null;

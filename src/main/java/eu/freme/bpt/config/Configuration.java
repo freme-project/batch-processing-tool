@@ -7,8 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Properties;
 
 /**
@@ -53,32 +51,24 @@ public class Configuration {
 
 	private static Logger logger = LoggerFactory.getLogger(Configuration.class);
 
-    public static Configuration create(CommandLine commandLine, Class serviceClass) throws IOException {
-        try {
-            Method getDefaultValue =  serviceClass.getMethod("getDefaultValue", String.class); // TODO: find out if still necessary since defaults are set in constructor of service?
-            
-            File inputFile = commandLine.hasOption("if") ? new File(commandLine.getOptionValue("if")) : null;
-            File outputDir = commandLine.hasOption("od") ? new File(commandLine.getOptionValue("od")) : null;
-            Format inFormat = commandLine.hasOption('f') ? Format.valueOf(commandLine.getOptionValue('f')) : Format.turtle;
-            Format outFormat = commandLine.hasOption('o') ? Format.valueOf(commandLine.getOptionValue('o')) : Format.turtle;
-            String sourceLang = commandLine.getOptionValue('s', (String) getDefaultValue.invoke(null, "source-lang"));
-            String targetLang = commandLine.getOptionValue('t', (String) getDefaultValue.invoke(null, "target-lang"));
-            String domain = commandLine.getOptionValue('d', (String) getDefaultValue.invoke(null, "domain"));
-            String system = commandLine.getOptionValue("system", (String) getDefaultValue.invoke(null,"system"));
-            String key = commandLine.getOptionValue('k', (String) getDefaultValue.invoke(null, "key"));
-            String language = commandLine.getOptionValue("language", (String) getDefaultValue.invoke(null, "language"));
-            String dataset = commandLine.getOptionValue("dataset", (String) getDefaultValue.invoke(null, "dataset"));
-            String mode = commandLine.getOptionValue("mode", (String) getDefaultValue.invoke(null, "mode"));
-            String templateID = commandLine.getOptionValue("templateid", (String) getDefaultValue.invoke(null, "templateid"));
-            String collection = commandLine.getOptionValue('c', (String) getDefaultValue.invoke(null, "collection"));
-            String propertiedFile = commandLine.hasOption("prop")? commandLine.getOptionValue("prop") : null;
-            return new Configuration(inputFile, outputDir, inFormat, outFormat, sourceLang, targetLang, domain, key, system, language, dataset, mode, templateID, collection, propertiedFile);
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
-			logger.error("Something went wrong getting the command line options of class {}.", serviceClass.getName(), ex);
-        }
-        
-        return null;
-    }
+	public static Configuration create(CommandLine commandLine) throws IOException {
+		File inputFile = commandLine.hasOption("if") ? new File(commandLine.getOptionValue("if")) : null;
+		File outputDir = commandLine.hasOption("od") ? new File(commandLine.getOptionValue("od")) : null;
+		Format inFormat = commandLine.hasOption('f') ? Format.valueOf(commandLine.getOptionValue('f')) : null;
+		Format outFormat = commandLine.hasOption('o') ? Format.valueOf(commandLine.getOptionValue('o')) : null;
+		String sourceLang = commandLine.getOptionValue('s');
+		String targetLang = commandLine.getOptionValue('t');
+		String domain = commandLine.getOptionValue('d');
+		String system = commandLine.getOptionValue("system");
+		String key = commandLine.getOptionValue('k');
+		String language = commandLine.getOptionValue("language");
+		String dataset = commandLine.getOptionValue("dataset");
+		String mode = commandLine.getOptionValue("mode");
+		String templateID = commandLine.getOptionValue("templateid");
+		String collection = commandLine.getOptionValue('c');
+		String propertiedFile = commandLine.hasOption("prop") ? commandLine.getOptionValue("prop") : null;
+		return new Configuration(inputFile, outputDir, inFormat, outFormat, sourceLang, targetLang, domain, key, system, language, dataset, mode, templateID, collection, propertiedFile);
+	}
 
     private Configuration(File inputFile,
 						  File outputDir,

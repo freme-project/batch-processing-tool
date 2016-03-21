@@ -88,17 +88,4 @@ public class ETerminology extends AbstractService {
         Option mode = Option.builder().longOpt("mode").hasArg().argName("MODE").desc("Whether the result must contain full terminology information or only term annotations with references to the full information").build();
         options.addOption(collection).addOption(key).addOption(mode).addOption(domain).addOption(sourceLang).addOption(targetLang);
     }
-
-    public static String getDefaultValue(String option) {
-        switch (option) {
-            case "mode":
-                return "full";
-            case "source-lang":
-                return "en";
-            case "target-lang":
-                return "de";
-            default:
-                return null;
-        }
-    }
 }
