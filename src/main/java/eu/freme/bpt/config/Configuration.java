@@ -6,13 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -54,13 +50,12 @@ public class Configuration {
     private final String collection;
 
     private final Properties properties;
-    private final Map<String, String> serviceToEndpoint;
 
 	private static Logger logger = LoggerFactory.getLogger(Configuration.class);
 
     public static Configuration create(CommandLine commandLine, Class serviceClass) throws IOException {
         try {
-            Method getDefaultValue =  serviceClass.getMethod("getDefaultValue", String.class);
+            Method getDefaultValue =  serviceClass.getMethod("getDefaultValue", String.class); // TODO: find out if still necessary since defaults are set in constructor of service?
             
             File inputFile = commandLine.hasOption("if") ? new File(commandLine.getOptionValue("if")) : null;
             File outputDir = commandLine.hasOption("od") ? new File(commandLine.getOptionValue("od")) : null;
@@ -85,21 +80,21 @@ public class Configuration {
         return null;
     }
 
-    public Configuration(File inputFile,
-            File outputDir,
-            Format inFormat,
-            Format outFormat,
-            String sourceLang,
-            String targetLang,
-            String domain,
-            String key,
-            String system,
-            String language,
-            String dataset,
-            String mode,
-            String templateID,
-            String collection,
-            String propertiesFile) {
+    private Configuration(File inputFile,
+						  File outputDir,
+						  Format inFormat,
+						  Format outFormat,
+						  String sourceLang,
+						  String targetLang,
+						  String domain,
+						  String key,
+						  String system,
+						  String language,
+						  String dataset,
+						  String mode,
+						  String templateID,
+						  String collection,
+						  String propertiesFile) {
         this.inputFile = inputFile;
         this.outputDir = outputDir;
         this.inFormat = inFormat;
@@ -116,28 +111,12 @@ public class Configuration {
         this.collection = collection;
 
 		Properties properties = new Properties();
-		try (InputStream propertiesStream = Configuration.class.getResourceAsStream("/bpt.properties")) {
-			properties.load(propertiesStream);
+		try {
+			properties = propertiesFile != null ? BPTProperties.getInstance(propertiesFile) : BPTProperties.getInstance();
 		} catch (IOException e) {
-			logger.error("Cannot load default properties in btp.properties in jar!", e);
+			logger.error("Cannot load the properties!", e);
 		}
-		if (propertiesFile != null) {
-			try (InputStream propertiesStream = new FileInputStream(propertiesFile)) {
-				properties.load(propertiesStream);
-			} catch (IOException e) {
-				logger.error("Cannot load the given properties file {}! Using default properties.", propertiesFile, e);
-			}
-		}
-
         this.properties = properties;
-
-        serviceToEndpoint = new HashMap<>();
-        serviceToEndpoint.put("e-entity", properties.getProperty("e-entity"));
-        serviceToEndpoint.put("e-link", properties.getProperty("e-link"));
-        serviceToEndpoint.put("e-publishing", properties.getProperty("e-publishing"));
-        serviceToEndpoint.put("e-terminology", properties.getProperty("e-terminology"));
-        serviceToEndpoint.put("e-translate", properties.getProperty("e-translate"));
-        serviceToEndpoint.put("pipelining", properties.getProperty("pipelining"));
     }
 
     public File getInputFile() {
@@ -157,7 +136,7 @@ public class Configuration {
     }
 
     public String getEndpoint(final String service) {
-        return serviceToEndpoint.get(service);
+        return properties.getProperty(service);
     }
 
     public String getSourceLang() {

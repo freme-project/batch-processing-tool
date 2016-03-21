@@ -1,7 +1,7 @@
 package eu.freme.bpt.service;
 
 import eu.freme.bpt.common.Format;
-import eu.freme.bpt.config.Configuration;
+import eu.freme.bpt.config.BPTProperties;
 import eu.freme.bpt.io.IO;
 import eu.freme.bpt.io.IOIterator;
 import eu.freme.bpt.io.SimpleIOIterator;
@@ -41,10 +41,11 @@ public class AbstractServiceTest {
 		String input = "This is an English text";
 		InputStream inputStream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		Configuration configuration = new Configuration(null, null, Format.text, Format.turtle, "en", "de", null, null, null, null, null, null, null, null, null);
 		IOIterator ioIterator = new SimpleIOIterator(new IO(inputStream, outputStream));
+		BPTProperties properties = BPTProperties.getInstance();
 
-		ETranslate eTranslate = new ETranslate (configuration.getEndpoint("e-translate"), ioIterator, Format.text, Format.turtle, "en", "de", null, null, null);
+
+		ETranslate eTranslate = new ETranslate (properties.getProperty("e-translate"), ioIterator, Format.text, Format.turtle, "en", "de", null, null, null);
 
 		eTranslate.run(FailurePolicy.create("abort", null), 4);
 		System.out.println("translation: " + outputStream.toString(StandardCharsets.UTF_8.name()));
