@@ -1,6 +1,8 @@
 package eu.freme.bpt.common;
 
 import org.apache.commons.cli.CommandLine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,8 +13,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche
@@ -55,6 +55,8 @@ public class Configuration {
     private final Properties properties;
     private final Map<String, String> serviceToEndpoint;
 
+	private static Logger logger = LoggerFactory.getLogger(Configuration.class);
+
     public static Configuration create(CommandLine commandLine, Class serviceClass) throws IOException {
         try {
             Method getDefaultValue =  serviceClass.getMethod("getDefaultValue", String.class);
@@ -73,20 +75,10 @@ public class Configuration {
             String mode = commandLine.getOptionValue("mode", (String) getDefaultValue.invoke(null, "mode"));
             String templateID = commandLine.getOptionValue("templateid", (String) getDefaultValue.invoke(null, "templateid"));
             String collection = commandLine.getOptionValue('c', (String) getDefaultValue.invoke(null, "collection"));
-            
-            Properties properties = new Properties();
-            try (InputStream propertiesStream = Configuration.class.getResourceAsStream("/bpt.properties")) {
-                properties.load(propertiesStream);
-            }
-            if (commandLine.hasOption("prop")) {
-                try (InputStream propertiesStream = new FileInputStream(commandLine.getOptionValue("prop"))) {
-                    properties.load(propertiesStream);
-                }
-            }
-            
-            return new Configuration(inputFile, outputDir, inFormat, outFormat, sourceLang, targetLang, domain, key, system, language, dataset, mode, templateID, collection, properties);
+            String propertiedFile = commandLine.hasOption("prop")? commandLine.getOptionValue("prop") : null;
+            return new Configuration(inputFile, outputDir, inFormat, outFormat, sourceLang, targetLang, domain, key, system, language, dataset, mode, templateID, collection, propertiedFile);
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
-            Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
+			logger.error("Something went wrong getting the command line options of class {}.", serviceClass.getName(), ex);
         }
         
         return null;
@@ -106,7 +98,7 @@ public class Configuration {
             String mode,
             String templateID,
             String collection,
-            Properties properties) {
+            String propertiesFile) {
         this.inputFile = inputFile;
         this.outputDir = outputDir;
         this.inFormat = inFormat;
@@ -121,6 +113,21 @@ public class Configuration {
         this.mode = mode;
         this.templateID = templateID;
         this.collection = collection;
+
+		Properties properties = new Properties();
+		try (InputStream propertiesStream = Configuration.class.getResourceAsStream("/bpt.properties")) {
+			properties.load(propertiesStream);
+		} catch (IOException e) {
+			logger.error("Cannot load default properties in btp.properties in jar!", e);
+		}
+		if (propertiesFile != null) {
+			try (InputStream propertiesStream = new FileInputStream(propertiesFile)) {
+				properties.load(propertiesStream);
+			} catch (IOException e) {
+				logger.error("Cannot load the given properties file {}! Using default properties.", propertiesFile, e);
+			}
+		}
+
         this.properties = properties;
 
         serviceToEndpoint = new HashMap<>();

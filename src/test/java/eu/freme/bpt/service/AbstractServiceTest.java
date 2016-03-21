@@ -9,7 +9,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Properties;
 
 import static org.junit.Assert.assertTrue;
 
@@ -41,12 +40,7 @@ public class AbstractServiceTest {
 		InputStream inputStream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-		Properties properties = new Properties();
-		try (InputStream propertiesStream = this.getClass().getResourceAsStream("/bpt.properties")) {
-			properties.load(propertiesStream);
-		}
-
-		Configuration configuration = new Configuration(null, null, Format.text, Format.turtle, "en", "de", null, null, null, null, null, null, null, null, properties);
+		Configuration configuration = new Configuration(null, null, Format.text, Format.turtle, "en", "de", null, null, null, null, null, null, null, null, null);
 
 		ETranslate eTranslate = new ETranslate (
 				inputStream,
