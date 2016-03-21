@@ -2,7 +2,7 @@ package eu.freme.bpt.service;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
-import eu.freme.bpt.common.Configuration;
+import eu.freme.bpt.config.Configuration;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

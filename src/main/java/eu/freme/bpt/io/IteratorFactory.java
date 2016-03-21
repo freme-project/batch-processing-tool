@@ -1,7 +1,7 @@
 package eu.freme.bpt.io;
 
-import eu.freme.bpt.common.Configuration;
 import eu.freme.bpt.common.Format;
+import eu.freme.bpt.config.Configuration;
 
 import java.io.File;
 import java.io.IOException;

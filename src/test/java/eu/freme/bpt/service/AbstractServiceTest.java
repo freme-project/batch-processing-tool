@@ -1,7 +1,7 @@
 package eu.freme.bpt.service;
 
-import eu.freme.bpt.common.Configuration;
 import eu.freme.bpt.common.Format;
+import eu.freme.bpt.config.Configuration;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;

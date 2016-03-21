@@ -1,7 +1,7 @@
 package eu.freme.bpt;
 
 import com.mashape.unirest.http.Unirest;
-import eu.freme.bpt.common.Configuration;
+import eu.freme.bpt.config.Configuration;
 import eu.freme.bpt.io.IO;
 import eu.freme.bpt.io.IOIterator;
 import eu.freme.bpt.io.IteratorFactory;

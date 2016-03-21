@@ -1,5 +1,6 @@
-package eu.freme.bpt.common;
+package eu.freme.bpt.config;
 
+import eu.freme.bpt.common.Format;
 import org.apache.commons.cli.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

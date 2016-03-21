@@ -1,11 +1,11 @@
 package eu.freme.bpt.service;
 
-import eu.freme.bpt.common.Configuration;
+import eu.freme.bpt.config.Configuration;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
 
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche
