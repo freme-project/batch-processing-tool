@@ -1,7 +1,6 @@
 package eu.freme.bpt.io;
 
 import eu.freme.bpt.common.Format;
-import eu.freme.bpt.config.Configuration;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,10 +27,7 @@ import java.io.IOException;
  */
 public class IteratorFactory {
 
-	public static IOIterator create(final Configuration configuration) throws IOException, IOCombinationNotPossibleException {
-		Format outFormat = configuration.getOutFormat();
-		File outputDir = configuration.getOutputDir();
-		File inputFile = configuration.getInputFile();
+	public static IOIterator create(final Format outFormat, final File outputDir, final File inputFile) throws IOException, IOCombinationNotPossibleException {
 
 		if (outputDir != null) {
 			if (!outputDir.exists()) {

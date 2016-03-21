@@ -2,7 +2,10 @@ package eu.freme.bpt.service;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
-import eu.freme.bpt.config.Configuration;
+import eu.freme.bpt.common.Format;
+import eu.freme.bpt.io.IO;
+import eu.freme.bpt.io.IOIterator;
+import eu.freme.bpt.util.FailurePolicy;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +13,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
@@ -36,59 +39,100 @@ import java.util.Map;
 public abstract class AbstractService implements Service {
 	private static Logger logger = LoggerFactory.getLogger(AbstractService.class);
 
-	private final InputStream inputStream;
-	private final OutputStream outputStream;
+	private final IOIterator ioIterator;
+
 	private final String endpoint;
 
 	private final Map<String, String> headers;
 	protected final Map<String, Object> parameters;
 
-	public AbstractService(final String serviceName, final InputStream inputStream, final OutputStream outputStream, final Configuration configuration) {
-		this.endpoint = configuration.getEndpoint(serviceName);
-		this.inputStream = inputStream;
-		this.outputStream = outputStream;
+	protected AbstractService(final String endpoint, final IOIterator ioIterator, final Format inFormat, final Format outFormat) {
+		this.endpoint = endpoint;
+		this.ioIterator = ioIterator;
 		headers = new HashMap<>();
-		headers.put("accept", configuration.getOutFormat().getMimeType());
-		headers.put("content-type", configuration.getInFormat().getMimeType());
+		headers.put("accept", outFormat != null ? outFormat.getMimeType() : Format.turtle.getMimeType());
+		headers.put("content-type", inFormat != null ? inFormat.getMimeType() : Format.turtle.getMimeType());
 		parameters = new HashMap<>(3);
 	}
 
-	@Override
-	public Boolean call() {
-		boolean success = false;
-		Unirest.setTimeouts(30000, 300000);
-		try {
-			byte[] input = IOUtils.toByteArray(inputStream);
-			HttpResponse<InputStream> response = Unirest.post(endpoint).headers(headers).queryString(parameters).body(input).asBinary();
-			if (response.getStatus() == 200) {
-				logger.debug("Request alright.");
-				InputStream responseInput = response.getBody();
+	public void run(final FailurePolicy failurePolicy, int nrThreads) {
+		ExecutorService executorService = Executors.newFixedThreadPool(nrThreads);
+		Set<Future<Boolean>> tasks = new HashSet<>();
+		while (ioIterator.hasNext()) {
+			final IO io = ioIterator.next();
+			final InputStream inputStream = io.getInputStream();
+			final OutputStream outputStream = io.getOutputStream();
+
+			tasks.add(executorService.submit(() -> {
+				boolean success = false;
+				Unirest.setTimeouts(30000, 300000);
 				try {
-					IOUtils.copy(responseInput, outputStream);
-					success = true;
-				} catch (IOException e) {
-					logger.error("Error while writing response.", e);
+					byte[] input = IOUtils.toByteArray(inputStream);
+					HttpResponse<InputStream> response = Unirest.post(endpoint).headers(headers).queryString(parameters).body(input).asBinary();
+					if (response.getStatus() == 200) {
+						logger.debug("Request alright.");
+						InputStream responseInput = response.getBody();
+						try {
+							IOUtils.copy(responseInput, outputStream);
+							success = true;
+						} catch (IOException e) {
+							logger.error("Error while writing response.", e);
+						} finally {
+							try {
+								responseInput.close();
+							} catch (IOException e) {
+								// not important :)
+							}
+						}
+					} else {
+						String body = IOUtils.toString(response.getBody());
+						logger.error("Error response from service {}: Status {}: {} - {}", endpoint, response.getStatus(), response.getStatusText(), body);
+					}
+				} catch (Exception e) {
+					logger.error("Request to {} failed." + endpoint, e);
 				} finally {
 					try {
-						responseInput.close();
+						inputStream.close();
+						outputStream.close();
 					} catch (IOException e) {
-						// not important :)
+						// not important
 					}
 				}
-			} else {
-				String body = IOUtils.toString(response.getBody());
-				logger.error("Error response from service {}: Status {}: {} - {}", endpoint, response.getStatus(), response.getStatusText(), body);
+				return success;
+			}));
+
+			executorService.shutdown();
+			while (!executorService.isTerminated()) {
+				Iterator<Future<Boolean>> resultIter = tasks.iterator();
+				Future<Boolean> result = resultIter.next();
+				if (result.isDone()) {
+					boolean success;
+					try {
+						success = result.get();
+					} catch (CancellationException | ExecutionException | InterruptedException e) {
+						success = false;
+					}
+					if (!success) {
+						logger.warn("A task failed!");
+						if (!failurePolicy.check()) {
+							System.exit(3);
+						}
+					} else {
+						logger.info("Success!");
+					}
+					resultIter.remove();
+				}
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// not important...
+				}
 			}
-		} catch (Exception e) {
-			logger.error("Request to {} failed." + endpoint, e);
-		} finally {
 			try {
-				inputStream.close();
-				outputStream.close();
-			} catch (IOException e) {
-				// not important
+				executorService.awaitTermination(1, TimeUnit.DAYS);
+			} catch (InterruptedException e) {
+				logger.warn("Waiting on termination interrupted.");
 			}
 		}
-		return success;
 	}
 }

@@ -2,7 +2,6 @@ package eu.freme.bpt;
 
 import com.mashape.unirest.http.Unirest;
 import eu.freme.bpt.config.Configuration;
-import eu.freme.bpt.io.IO;
 import eu.freme.bpt.io.IOIterator;
 import eu.freme.bpt.io.IteratorFactory;
 import eu.freme.bpt.service.*;
@@ -14,8 +13,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche
@@ -37,7 +37,7 @@ import java.util.concurrent.*;
  */
 public class Main {
 
-    public static final Logger logger = LoggerFactory.getLogger(Main.class);
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
         final List<String> services = Arrays.asList("e-entity", "e-link", "e-publishing", "e-terminology", "e-translate", "pipelining");
@@ -124,43 +124,65 @@ public class Main {
 			String failureStrategy = configuration.getFailureStrategy();
 			File outputDir = commandLine.hasOption("od") ? new File(commandLine.getOptionValue("od")) : null;
 			FailurePolicy failurePolicy = FailurePolicy.create(failureStrategy, outputDir);
+			ioIterator = IteratorFactory.create(configuration.getOutFormat(), configuration.getOutputDir(), configuration.getInputFile());
 
-            ExecutorService executorService = Executors.newFixedThreadPool(configuration.getThreads());
-            Set<Future<Boolean>> tasks = new HashSet<>();
+			Service eService;
+			switch (service) {
+				case "e-translate":
+					eService = new ETranslate(
+							configuration.getEndpoint("e-translate"),
+							ioIterator,
+							configuration.getInFormat(),
+							configuration.getOutFormat(),
+							configuration.getSourceLang(),
+							configuration.getTargetLang(),
+							configuration.getSystem(),
+							configuration.getDomain(),
+							configuration.getKey()
+					);
+					break;
+				case "e-entity":
+					eService = new EEntity(
+							configuration.getEndpoint("e-entity"),
+							ioIterator,
+							configuration.getInFormat(),
+							configuration.getOutFormat(),
+							configuration.getLanguage(),
+							configuration.getDataset(),
+							configuration.getMode()
+					);
+					break;
+				case "e-link":
+					eService = new ELink(
+							configuration.getEndpoint("e-entity"),
+							ioIterator,
+							configuration.getInFormat(),
+							configuration.getOutFormat(),
+							configuration.getTemplateID()
+					);
+					break;
+				case "e-terminology":
+					eService = new ETerminology(
+							configuration.getEndpoint("e-translate"),
+							ioIterator,
+							configuration.getInFormat(),
+							configuration.getOutFormat(),
+							configuration.getSourceLang(),
+							configuration.getTargetLang(),
+							configuration.getCollection(),
+							configuration.getDomain(),
+							configuration.getKey(),
+							configuration.getMode()
+					);
+					break;
+				default:
+					logger.error("Unknown service {}. Aborting!", service);
+					System.exit(3);
+					return;
 
-            ioIterator = IteratorFactory.create(configuration);
-            while (ioIterator.hasNext()) {
-                IO io = ioIterator.next();
-                Service eService = (Service) serviceClass.getConstructors()[0].newInstance(io.getInputStream(), io.getOutputStream(), configuration);
+			}
 
-                if (eService != null) {
-                    tasks.add(executorService.submit(eService));
-                }
-            }
-            executorService.shutdown();
-            while (!executorService.isTerminated()) {
-                Iterator<Future<Boolean>> resultIter = tasks.iterator();
-                Future<Boolean> result = resultIter.next();
-                if (result.isDone()) {
-                    boolean success;
-                    try {
-                        success = result.get();
-                    } catch (CancellationException | ExecutionException | InterruptedException e) {
-                        success = false;
-                    }
-                    if (!success) {
-                        logger.warn("A task failed!");
-						if (!failurePolicy.check()) {
-							System.exit(3);
-						}
-                    } else {
-                        logger.info("Success!");
-                    }
-                    resultIter.remove();
-                }
-                Thread.sleep(1000);
-            }
-            executorService.awaitTermination(1, TimeUnit.DAYS);
+			eService.run(failurePolicy, configuration.getThreads());
         } catch (Exception e) {
             logger.error("Cannot handle input or output. Reason: ", e);
             System.exit(2);

@@ -1,11 +1,9 @@
 package eu.freme.bpt.service;
 
-import eu.freme.bpt.config.Configuration;
+import eu.freme.bpt.common.Format;
+import eu.freme.bpt.io.IOIterator;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche
@@ -30,30 +28,41 @@ import java.io.OutputStream;
  */
 public class ETranslate extends AbstractService {
 
-    public ETranslate(InputStream inputStream, OutputStream outputStream, Configuration configuration) {
-        super("e-translate", inputStream, outputStream, configuration);
-        parameters.put("source-lang", configuration.getSourceLang());
-        parameters.put("target-lang", configuration.getTargetLang());
+	/**
+	 * Creates an ETranslate service object, that can be used to address the e-translate service.
+	 * @param endpoint		The address of the endpoint (url) to send the request to.
+	 * @param ioIterator	Iterator over input / output streams.
+	 * @param inFormat		OPTIONAL. The format of the input. The default is {@code turtle}.
+	 * @param outFormat		OPTIONAL. The format of the output. The default is {@code turtle}.
+	 * @param sourceLang    OPTIONAL. The language of the input. The default is {@code en}
+	 * @param targetLang	OPTIONAL. The language of the output. The default is {@code en}
+	 * @param system    	OPTIONAL. ID of the translation system to be used. Overwrites source-lang, target-lang and domain.
+	 * @param domain        OPTIONAL. Filters out by domain proposed terms
+	 * @param key           OPTIONAL. A private key to access private and not publicly available translation systems.
+	 */
+	public ETranslate(final String endpoint,
+					  final IOIterator ioIterator,
+					  final Format inFormat,
+					  final Format outFormat,
+					  final String sourceLang,
+					  final String targetLang,
+					  final String system,
+					  final String domain,
+					  final String key) {
+		super(endpoint, ioIterator, inFormat, outFormat);
+		parameters.put("source-lang", sourceLang != null ? sourceLang : "en");
+		parameters.put("target-lang", targetLang != null ? targetLang : "en");
+		if (system != null) parameters.put("system", system);
+		if (key != null) parameters.put("key", key);
+		if (domain != null) parameters.put("domain", domain);
+	}
 
-        if (configuration.getDomain() != null) {
-            parameters.put("domain", configuration.getDomain());
-        }
-
-        if (configuration.getKey() != null) {
-            parameters.put("key", configuration.getKey());
-        }
-
-        if (configuration.getSystem() != null) {
-            parameters.put("system", configuration.getSystem());
-        }
-    }
-
-    public static void addOptions(Options options) {
+	public static void addOptions(Options options) {
         Option sourceLang = Option.builder("s").longOpt("source-lang").hasArg().argName("LANGUAGE").desc("The source language of the input document(s)").build();
         Option targetLang = Option.builder("t").longOpt("target-lang").hasArg().argName("LANGUAGE").desc("The target language of the output document(s)").build();
-        Option domain = Option.builder("d").longOpt("domain").hasArg().argName("DOMAIN").desc("The domain of the translation system.").required(false).build();
-        Option key = Option.builder("k").longOpt("key").hasArg().argName("KEY").desc("A private key to access private and not publicly available translation systems. Key can be created by contacting Tilde team. Optional, if omitted then translates with public systems.").required(false).build();
-        Option system = Option.builder().longOpt("system").hasArg().argName("SYSTEM").desc("ID of the translation system to be used. Overwrites source-lang, target-lang and domain.").required(false).build();
+        Option domain = Option.builder("d").longOpt("domain").hasArg().argName("DOMAIN").desc("The domain of the translation system.").build();
+        Option key = Option.builder("k").longOpt("key").hasArg().argName("KEY").desc("A private key to access private and not publicly available translation systems. Key can be created by contacting Tilde team. Optional, if omitted then translates with public systems.").build();
+        Option system = Option.builder().longOpt("system").hasArg().argName("SYSTEM").desc("ID of the translation system to be used. Overwrites source-lang, target-lang and domain.").build();
         options.addOption(sourceLang).addOption(targetLang).addOption(domain).addOption(key).addOption(system);
     }
     

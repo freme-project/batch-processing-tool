@@ -1,6 +1,4 @@
-package eu.freme.bpt.service;
-
-import eu.freme.bpt.util.FailurePolicy;
+package eu.freme.bpt.io;
 
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
@@ -19,9 +17,24 @@ import eu.freme.bpt.util.FailurePolicy;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Represents the e-translate service
+ * An IOIterator created from a bunch of ios.
  *
  */
-public interface Service {
-	void run(final FailurePolicy failurePolicy, int nrThreads);
+public class SimpleIOIterator implements IOIterator {
+	private final IO[] ios;
+	private int index = 0;
+
+	public SimpleIOIterator (IO... ios) {
+		this.ios = ios;
+	}
+
+	@Override
+	public boolean hasNext() {
+		return index < ios.length;
+	}
+
+	@Override
+	public IO next() {
+		return ios[index++];
+	}
 }

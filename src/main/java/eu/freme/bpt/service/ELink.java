@@ -1,11 +1,9 @@
 package eu.freme.bpt.service;
 
-import eu.freme.bpt.config.Configuration;
+import eu.freme.bpt.common.Format;
+import eu.freme.bpt.io.IOIterator;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche
@@ -30,12 +28,24 @@ import java.io.OutputStream;
  */
 public class ELink extends AbstractService {
 
-    public ELink(InputStream inputStream, OutputStream outputStream, Configuration configuration) {
-        super("e-link", inputStream, outputStream, configuration);
-        parameters.put("templateid", configuration.getTemplateID());
-    }
+	/**
+	 * Creates an ELink service object, that can be used to address the e-link service.
+	 * @param endpoint		The address of the endpoint (url) to send the request to.
+	 * @param ioIterator	Iterator over input / output streams.
+	 * @param inFormat		OPTIONAL. The format of the input. The default is {@code turtle}.
+	 * @param outFormat		OPTIONAL. The format of the output. The default is {@code turtle}.
+	 * @param templateId    The ID of the template to be used.
+	 */
+	public ELink(final String endpoint,
+				 final IOIterator ioIterator,
+				 final Format inFormat,
+				 final Format outFormat,
+				 final String templateId) {
+		super(endpoint, ioIterator, inFormat, outFormat);
+		parameters.put("templateid", templateId);
+	}
 
-    public static void addOptions(Options options) {
+	public static void addOptions(Options options) {
         Option templateID = Option.builder().longOpt("templateid").hasArg().argName("ID").desc("This parameter sets the ID of the template to be used.").required(true).build();
         options.addOption(templateID);
     }
