@@ -36,21 +36,21 @@ public class FailurePolicyTest {
 
 	@Test
 	public void testStdOutBestEffort() {
-		FailurePolicy policy = FailurePolicy.create("best-effort", null);
+		FailurePolicy policy = FailurePolicy.create(FailurePolicy.Strategy.BEST_EFFORT, null);
 		assertEquals(FailurePolicy.Strategy.BEST_EFFORT, policy.getStrategy());
 		assertTrue(policy.check());
 	}
 
 	@Test
 	public void testStdOutAbort() {
-		FailurePolicy policy = FailurePolicy.create("abort", null);
+		FailurePolicy policy = FailurePolicy.create(FailurePolicy.Strategy.ABORT, null);
 		assertEquals(FailurePolicy.Strategy.ABORT, policy.getStrategy());
 		assertFalse(policy.check());
 	}
 
 	@Test
 	public void testStdOutRevert() {
-		FailurePolicy policy = FailurePolicy.create("revert", null);
+		FailurePolicy policy = FailurePolicy.create(FailurePolicy.Strategy.REVERT, null);
 		assertEquals(FailurePolicy.Strategy.ABORT, policy.getStrategy());
 		assertFalse(policy.check());
 	}
@@ -58,7 +58,7 @@ public class FailurePolicyTest {
 	@Test
 	public void testDirBestEffort() throws IOException {
 		File dir = createDir();
-		FailurePolicy policy = FailurePolicy.create("best-effort", dir);
+		FailurePolicy policy = FailurePolicy.create(FailurePolicy.Strategy.BEST_EFFORT, dir);
 		assertEquals(FailurePolicy.Strategy.BEST_EFFORT, policy.getStrategy());
 		assertTrue(policy.check());
 		assertTrue(dir.exists());
@@ -68,7 +68,7 @@ public class FailurePolicyTest {
 	@Test
 	public void testDirBestAbort() throws IOException {
 		File dir = createDir();
-		FailurePolicy policy = FailurePolicy.create("abort", dir);
+		FailurePolicy policy = FailurePolicy.create(FailurePolicy.Strategy.ABORT, dir);
 		assertEquals(FailurePolicy.Strategy.ABORT, policy.getStrategy());
 		assertFalse(policy.check());
 		assertTrue(dir.exists());
@@ -78,7 +78,7 @@ public class FailurePolicyTest {
 	@Test
 	public void testDirRevert() throws IOException {
 		File dir = createDir();
-		FailurePolicy policy = FailurePolicy.create("revert", dir);
+		FailurePolicy policy = FailurePolicy.create(FailurePolicy.Strategy.REVERT, dir);
 		assertEquals(FailurePolicy.Strategy.REVERT, policy.getStrategy());
 		assertFalse(policy.check());
 		assertFalse(dir.exists());

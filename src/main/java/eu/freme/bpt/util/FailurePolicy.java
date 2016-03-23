@@ -45,23 +45,23 @@ public class FailurePolicy {
 	 * @param outputDir	The output dir to clean up in case of "revert". If outputDir is {@code null} (in case of std out), "revert" becomes "abort".
 	 * @return			The created object.
 	 */
-	public static FailurePolicy create(final String policy, final File outputDir) {
+	public static FailurePolicy create(final Strategy policy, final File outputDir) {
 		Strategy pol;
 		switch (policy) {
-			case "abort":
-				pol = Strategy.ABORT;
+			case ABORT:
+				pol = policy;
 				break;
-			case "revert":
+			case REVERT:
 				if (outputDir == null) {
 					logger.info("Given strategy is 'revert', but the output is standard out. Changing to 'abort'.");
 					pol = Strategy.ABORT;
 				} else {
-					pol = Strategy.REVERT;
+					pol = policy;
 				}
 				break;
-			case "best-effort":
+			case BEST_EFFORT:
 			default:
-				pol = Strategy.BEST_EFFORT;
+				pol = policy;
 				break;
 		}
 		return new FailurePolicy(pol, outputDir);

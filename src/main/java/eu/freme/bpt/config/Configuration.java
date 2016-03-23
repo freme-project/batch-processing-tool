@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Properties;
 
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche
@@ -47,7 +46,7 @@ public class Configuration {
     private final String templateID;
     private final String collection;
 
-    private final Properties properties;
+    private final BPTProperties properties;
 
 	private static Logger logger = LoggerFactory.getLogger(Configuration.class);
 
@@ -66,8 +65,8 @@ public class Configuration {
 		String mode = commandLine.getOptionValue("mode");
 		String templateID = commandLine.getOptionValue("templateid");
 		String collection = commandLine.getOptionValue('c');
-		String propertiedFile = commandLine.hasOption("prop") ? commandLine.getOptionValue("prop") : null;
-		return new Configuration(inputFile, outputDir, inFormat, outFormat, sourceLang, targetLang, domain, key, system, language, dataset, mode, templateID, collection, propertiedFile);
+		String propertiesFile = commandLine.hasOption("prop") ? commandLine.getOptionValue("prop") : null;
+		return new Configuration(inputFile, outputDir, inFormat, outFormat, sourceLang, targetLang, domain, key, system, language, dataset, mode, templateID, collection, propertiesFile);
 	}
 
     private Configuration(File inputFile,
@@ -84,7 +83,7 @@ public class Configuration {
 						  String mode,
 						  String templateID,
 						  String collection,
-						  String propertiesFile) {
+						  String propertiesFile) throws IOException {
         this.inputFile = inputFile;
         this.outputDir = outputDir;
         this.inFormat = inFormat;
@@ -100,13 +99,7 @@ public class Configuration {
         this.templateID = templateID;
         this.collection = collection;
 
-		Properties properties = new Properties();
-		try {
-			properties = propertiesFile != null ? BPTProperties.getInstance(propertiesFile) : BPTProperties.getInstance();
-		} catch (IOException e) {
-			logger.error("Cannot load the properties!", e);
-		}
-        this.properties = properties;
+		properties = BPTProperties.getInstance(propertiesFile);
     }
 
     public File getInputFile() {
@@ -123,10 +116,6 @@ public class Configuration {
 
     public Format getOutFormat() {
         return outFormat;
-    }
-
-    public String getEndpoint(final String service) {
-        return properties.getProperty(service);
     }
 
     public String getSourceLang() {
@@ -161,18 +150,6 @@ public class Configuration {
         return mode;
     }
 
-    public int getThreads() {
-        return Integer.parseInt(properties.getProperty("threads"));
-    }
-
-    public String getFailureStrategy() {
-        return properties.getProperty("failure");
-    }
-
-    public String getPrefix() {
-        return properties.getProperty("prefix");
-    }
-    
     public String getTemplateID() {
         return templateID;
     }
@@ -180,4 +157,8 @@ public class Configuration {
     public String getCollection() {
         return collection;
     }
+
+	public BPTProperties getProperties() {
+		return properties;
+	}
 }

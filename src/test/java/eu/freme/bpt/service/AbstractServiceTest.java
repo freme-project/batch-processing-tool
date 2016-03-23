@@ -47,7 +47,7 @@ public class AbstractServiceTest {
 
 		ETranslation eTranslation = new ETranslation(properties.getProperty("e-translation"), ioIterator, Format.text, Format.turtle, "en", "de", null, null, null);
 
-		eTranslation.run(FailurePolicy.create("abort", null), 4);
+		eTranslation.run(FailurePolicy.create(FailurePolicy.Strategy.ABORT, null), 4);
 		System.out.println("translation: " + outputStream.toString(StandardCharsets.UTF_8.name()));
 
 	}

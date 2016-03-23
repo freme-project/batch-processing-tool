@@ -1,5 +1,6 @@
 package eu.freme.bpt;
 
+import eu.freme.bpt.config.BPTProperties;
 import eu.freme.bpt.config.Configuration;
 import eu.freme.bpt.io.IOIterator;
 import eu.freme.bpt.io.IteratorFactory;
@@ -113,8 +114,9 @@ public class Main {
         IOIterator ioIterator;
         try {
             Configuration configuration = Configuration.create(commandLine);
+			BPTProperties properties = configuration.getProperties();
 
-			String failureStrategy = configuration.getFailureStrategy();
+			FailurePolicy.Strategy failureStrategy = properties.getFailureStrategy();
 			File outputDir = commandLine.hasOption("od") ? new File(commandLine.getOptionValue("od")) : null;
 			FailurePolicy failurePolicy = FailurePolicy.create(failureStrategy, outputDir);
 			ioIterator = IteratorFactory.create(configuration.getOutFormat(), configuration.getOutputDir(), configuration.getInputFile());
@@ -123,7 +125,7 @@ public class Main {
 			switch (service) {
 				case "e-translation":
 					eService = new ETranslation(
-							configuration.getEndpoint(service),
+							properties.getETranslation(),
 							ioIterator,
 							configuration.getInFormat(),
 							configuration.getOutFormat(),
@@ -136,7 +138,7 @@ public class Main {
 					break;
 				case "e-entity":
 					eService = new EEntity(
-							configuration.getEndpoint(service),
+							properties.getEEntity(),
 							ioIterator,
 							configuration.getInFormat(),
 							configuration.getOutFormat(),
@@ -147,7 +149,7 @@ public class Main {
 					break;
 				case "e-link":
 					eService = new ELink(
-							configuration.getEndpoint(service),
+							properties.getELink(),
 							ioIterator,
 							configuration.getInFormat(),
 							configuration.getOutFormat(),
@@ -156,7 +158,7 @@ public class Main {
 					break;
 				case "e-terminology":
 					eService = new ETerminology(
-							configuration.getEndpoint(service),
+							properties.getETerminology(),
 							ioIterator,
 							configuration.getInFormat(),
 							configuration.getOutFormat(),
@@ -175,7 +177,7 @@ public class Main {
 
 			}
 
-			eService.run(failurePolicy, configuration.getThreads());
+			eService.run(failurePolicy, properties.getThreads());
         } catch (Exception e) {
             logger.error("Cannot handle input or output. Reason: ", e);
             System.exit(2);
