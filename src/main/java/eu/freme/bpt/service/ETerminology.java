@@ -28,25 +28,6 @@ import org.apache.commons.cli.Options;
  */
 public class ETerminology extends AbstractService {
 
-    /*public ETerminology(InputStream inputStream, OutputStream outputStream, Configuration configuration) {
-        super("e-terminology", inputStream, outputStream, configuration);
-        parameters.put("source-lang", configuration.getSourceLang());
-        parameters.put("target-lang", configuration.getTargetLang());
-        parameters.put("mode", configuration.getMode());
-        
-        if (configuration.getCollection() != null) {
-            parameters.put("collection", configuration.getCollection());
-        }
-        
-        if (configuration.getKey() != null) {
-            parameters.put("key", configuration.getKey());
-        }
-        
-        if (configuration.getDomain() != null) {
-            parameters.put("domain", configuration.getDomain());
-        }
-    } */
-
 	/**
 	 * Creates an ETerminology service object, that can be used to address the e-terminology service.
 	 * @param endpoint		The address of the endpoint (url) to send the request to.
