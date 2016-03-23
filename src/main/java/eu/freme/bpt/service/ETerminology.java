@@ -23,7 +23,7 @@ import org.apache.commons.cli.Options;
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * Represents the e-translate service
+ * Represents the e-Terminology service
  *
  */
 public class ETerminology extends AbstractService {

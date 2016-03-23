@@ -23,13 +23,13 @@ import org.apache.commons.cli.Options;
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * Represents the e-translate service
+ * Represents the e-Translation service
  *
  */
-public class ETranslate extends AbstractService {
+public class ETranslation extends AbstractService {
 
 	/**
-	 * Creates an ETranslate service object, that can be used to address the e-translate service.
+	 * Creates an ETranslation service object, that can be used to address the e-translation service.
 	 * @param endpoint		The address of the endpoint (url) to send the request to.
 	 * @param ioIterator	Iterator over input / output streams.
 	 * @param inFormat		OPTIONAL. The format of the input. The default is {@code turtle}.
@@ -40,15 +40,15 @@ public class ETranslate extends AbstractService {
 	 * @param domain        OPTIONAL. Filters out by domain proposed terms
 	 * @param key           OPTIONAL. A private key to access private and not publicly available translation systems.
 	 */
-	public ETranslate(final String endpoint,
-					  final IOIterator ioIterator,
-					  final Format inFormat,
-					  final Format outFormat,
-					  final String sourceLang,
-					  final String targetLang,
-					  final String system,
-					  final String domain,
-					  final String key) {
+	public ETranslation(final String endpoint,
+						final IOIterator ioIterator,
+						final Format inFormat,
+						final Format outFormat,
+						final String sourceLang,
+						final String targetLang,
+						final String system,
+						final String domain,
+						final String key) {
 		super(endpoint, ioIterator, inFormat, outFormat);
 		parameters.put("source-lang", sourceLang != null ? sourceLang : "en");
 		parameters.put("target-lang", targetLang != null ? targetLang : "en");

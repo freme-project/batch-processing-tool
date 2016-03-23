@@ -38,7 +38,7 @@ public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
-        final List<String> services = Arrays.asList("e-entity", "e-link", "e-publishing", "e-terminology", "e-translate", "pipelining");
+        final List<String> services = Arrays.asList("e-entity", "e-link", "e-publishing", "e-terminology", "e-translation", "pipelining");
         Pair<String, String[]> serviceAndArgs = extractService(args, services);
 
         String service = serviceAndArgs.getName();
@@ -67,8 +67,8 @@ public class Main {
         /////// Service specific options ///////
         if (service != null) {
             switch (service) {
-                case "e-translate":
-                    ETranslate.addOptions(options);
+                case "e-translation":
+                    ETranslation.addOptions(options);
                     break;
                 case "e-entity":
                     EEntity.addOptions(options);
@@ -84,7 +84,7 @@ public class Main {
                     break;
             }
         } else {
-            ETranslate.addOptions(options);
+            ETranslation.addOptions(options);
             EEntity.addOptions(options);
             ELink.addOptions(options);
             ETerminology.addOptions(options);
@@ -121,9 +121,9 @@ public class Main {
 
 			Service eService;
 			switch (service) {
-				case "e-translate":
-					eService = new ETranslate(
-							configuration.getEndpoint("e-translate"),
+				case "e-translation":
+					eService = new ETranslation(
+							configuration.getEndpoint(service),
 							ioIterator,
 							configuration.getInFormat(),
 							configuration.getOutFormat(),
@@ -136,7 +136,7 @@ public class Main {
 					break;
 				case "e-entity":
 					eService = new EEntity(
-							configuration.getEndpoint("e-entity"),
+							configuration.getEndpoint(service),
 							ioIterator,
 							configuration.getInFormat(),
 							configuration.getOutFormat(),
@@ -147,7 +147,7 @@ public class Main {
 					break;
 				case "e-link":
 					eService = new ELink(
-							configuration.getEndpoint("e-entity"),
+							configuration.getEndpoint(service),
 							ioIterator,
 							configuration.getInFormat(),
 							configuration.getOutFormat(),
@@ -156,7 +156,7 @@ public class Main {
 					break;
 				case "e-terminology":
 					eService = new ETerminology(
-							configuration.getEndpoint("e-translate"),
+							configuration.getEndpoint(service),
 							ioIterator,
 							configuration.getInFormat(),
 							configuration.getOutFormat(),

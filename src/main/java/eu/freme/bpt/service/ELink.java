@@ -23,7 +23,7 @@ import org.apache.commons.cli.Options;
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * Represents the e-translate service
+ * Represents the e-Link service
  *
  */
 public class ELink extends AbstractService {

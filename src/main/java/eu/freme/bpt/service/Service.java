@@ -19,7 +19,7 @@ import eu.freme.bpt.util.FailurePolicy;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Represents the e-translate service
+ * Represents a FREME service
  *
  */
 public interface Service {
