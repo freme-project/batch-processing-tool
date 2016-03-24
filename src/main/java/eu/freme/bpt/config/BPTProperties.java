@@ -53,4 +53,16 @@ public class BPTProperties {
 	public String getUriOf(final EService service) {
 		return properties.getProperty(service.getName(), service.getDefaultUrl());
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder str = new StringBuilder("Properties:\n");
+		str.append("threads: \t").append(getThreads()).append('\n');
+		str.append("failure policy: \t").append(getFailureStrategy()).append('\n');
+		str.append("prefix: \t").append(getPrefix()).append('\n');
+		for (EService eService : EService.values()) {
+			str.append(eService.getName()).append(": \t").append(getUriOf(eService)).append('\n');
+		}
+		return str.toString();
+	}
 }
