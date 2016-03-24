@@ -26,7 +26,7 @@ public enum EService {
 	E_PUBLISHING("e-publishing", "http://api.freme-project.eu/current/e-publishing/html"),
 	E_TERMINOLOGY("e-terminology", "http://api.freme-project.eu/current/e-terminology/tilde"),
 	E_TRANSLATION("e-translation", "http://api.freme-project.eu/current/e-translation/tilde"),
-	PIPELINING("pipelining", "http://api.freme-project.eu/current/pipelining/chain");
+	PIPELINING("pipelining", "http://api.freme-project.eu/current/pipelining/chain")
 	;
 
 	private final String name;
