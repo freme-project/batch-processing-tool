@@ -2,9 +2,6 @@ package eu.freme.bpt.config;
 
 import eu.freme.bpt.util.FailurePolicy;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 /**
@@ -28,24 +25,7 @@ import java.util.Properties;
  * Holds the properties of the tool.
  */
 public class BPTProperties extends Properties {
-
-	private static BPTProperties instance = null;
-
-	public static BPTProperties getInstance() throws IOException {
-		return getInstance(null);
-	}
-
-	public static BPTProperties getInstance(final String propertiesFile) throws IOException {
-		if (instance == null) {
-			instance = new BPTProperties();
-			if (propertiesFile != null) {
-				try (InputStream propertiesStream = new FileInputStream(propertiesFile)) {
-					instance.load(propertiesStream);
-				}
-			}
-		}
-		return instance;
-	}
+	public BPTProperties() {}
 
 	public int getThreads() {
 		return Integer.parseInt(getProperty("threads"), 1);

@@ -42,10 +42,10 @@ public class AbstractServiceTest {
 		InputStream inputStream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		IOIterator ioIterator = new SimpleIOIterator(new IO(inputStream, outputStream));
-		BPTProperties properties = BPTProperties.getInstance();
+		BPTProperties properties = new BPTProperties();
 
 
-		ETranslation eTranslation = new ETranslation(properties.getProperty("e-translation"), ioIterator, Format.text, Format.turtle, "en", "de", null, null, null);
+		ETranslation eTranslation = new ETranslation(properties.getETranslation(), ioIterator, Format.text, Format.turtle, "en", "de", null, null, null);
 
 		eTranslation.run(FailurePolicy.create(FailurePolicy.Strategy.ABORT, null), 4);
 		System.out.println("translation: " + outputStream.toString(StandardCharsets.UTF_8.name()));

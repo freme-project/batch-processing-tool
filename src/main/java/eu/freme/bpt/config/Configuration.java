@@ -6,7 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche
@@ -99,7 +101,12 @@ public class Configuration {
         this.templateID = templateID;
         this.collection = collection;
 
-		properties = BPTProperties.getInstance(propertiesFile);
+		properties = new BPTProperties();
+		if (propertiesFile != null) {
+			try (InputStream propertiesStream = new FileInputStream(propertiesFile)) {
+				properties.load(propertiesStream);
+			}
+		}
     }
 
     public File getInputFile() {
