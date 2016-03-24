@@ -2,6 +2,9 @@ package eu.freme.bpt.config;
 
 import eu.freme.bpt.util.FailurePolicy;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 /**
@@ -24,43 +27,49 @@ import java.util.Properties;
  * <p>
  * Holds the properties of the tool.
  */
-public class BPTProperties extends Properties {
-	public BPTProperties() {}
+public class BPTProperties {
+	private Properties properties = new Properties();
+
+	public void load(final String propertiesFile) throws IOException {
+		try (InputStream propertiesStream = new FileInputStream(propertiesFile)) {
+			properties.load(propertiesStream);
+		}
+	}
 
 	public int getThreads() {
-		return Integer.parseInt(getProperty("threads"), 1);
+		return Integer.parseInt(properties.getProperty("threads"), 1);
 	}
 
 	public FailurePolicy.Strategy getFailureStrategy() {
-		String failureStr = getProperty("failure", "best-effort");
+		String failureStr = properties.getProperty("failure", "best-effort");
 		return FailurePolicy.Strategy.valueOf(failureStr);
 	}
 
 	public String getPrefix() {
-		return getProperty("prefix", "http://freme-project.eu/");
+		return properties.getProperty("prefix", "http://freme-project.eu/");
 	}
 
 	public String getEEntity() {
-		return getProperty("e-entity", "http://api.freme-project.eu/current/e-entity/freme-ner/documents");
+		return properties.getProperty("e-entity", "http://api.freme-project.eu/current/e-entity/freme-ner/documents");
 	}
 
 	public String getELink() {
-		return getProperty("e-link", "http://api.freme-project.eu/current/e-link/documents");
+		return properties.getProperty("e-link", "http://api.freme-project.eu/current/e-link/documents");
 	}
 
 	public String getEPublishing() {
-		return getProperty("e-publishing", "http://api.freme-project.eu/current/e-publishing/html");
+		return properties.getProperty("e-publishing", "http://api.freme-project.eu/current/e-publishing/html");
 	}
 
 	public String getETerminology() {
-		return getProperty("e-terminology", "http://api.freme-project.eu/current/e-terminology/tilde");
+		return properties.getProperty("e-terminology", "http://api.freme-project.eu/current/e-terminology/tilde");
 	}
 
 	public String getETranslation() {
-		return getProperty("e-translation", "http://api.freme-project.eu/current/e-translation/tilde");
+		return properties.getProperty("e-translation", "http://api.freme-project.eu/current/e-translation/tilde");
 	}
 
 	public String getPipelining() {
-		return getProperty("pipelining", "http://api.freme-project.eu/current/pipelining/chain");
+		return properties.getProperty("pipelining", "http://api.freme-project.eu/current/pipelining/chain");
 	}
 }

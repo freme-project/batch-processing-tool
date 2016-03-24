@@ -2,13 +2,9 @@ package eu.freme.bpt.config;
 
 import eu.freme.bpt.common.Format;
 import org.apache.commons.cli.CommandLine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche
@@ -49,8 +45,6 @@ public class Configuration {
     private final String collection;
 
     private final BPTProperties properties;
-
-	private static Logger logger = LoggerFactory.getLogger(Configuration.class);
 
 	public static Configuration create(CommandLine commandLine) throws IOException {
 		File inputFile = commandLine.hasOption("if") ? new File(commandLine.getOptionValue("if")) : null;
@@ -103,9 +97,7 @@ public class Configuration {
 
 		properties = new BPTProperties();
 		if (propertiesFile != null) {
-			try (InputStream propertiesStream = new FileInputStream(propertiesFile)) {
-				properties.load(propertiesStream);
-			}
+			properties.load(propertiesFile);
 		}
     }
 
