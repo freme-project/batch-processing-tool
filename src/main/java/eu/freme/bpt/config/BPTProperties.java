@@ -38,12 +38,12 @@ public class BPTProperties {
 	}
 
 	public int getThreads() {
-		return Integer.parseInt(properties.getProperty("threads"), 1);
+		return Integer.parseInt(properties.getProperty("threads", "1"));
 	}
 
 	public FailurePolicy.Strategy getFailureStrategy() {
 		String failureStr = properties.getProperty("failure", "best-effort");
-		return FailurePolicy.Strategy.valueOf(failureStr);
+		return FailurePolicy.Strategy.valueOf(failureStr.toUpperCase().replace('-', '_'));
 	}
 
 	public String getPrefix() {
