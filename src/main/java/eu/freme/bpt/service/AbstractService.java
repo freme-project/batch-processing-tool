@@ -56,6 +56,7 @@ public abstract class AbstractService implements Service {
 	}
 
 	public void run(final FailurePolicy failurePolicy, int nrThreads) {
+		logger.info("Running service {}", this.getClass().getName());
 		ExecutorService executorService = Executors.newFixedThreadPool(nrThreads);
 		Set<Future<Boolean>> tasks = new HashSet<>();
 		Unirest.setTimeouts(30000, 300000);	// TODO: configurable?

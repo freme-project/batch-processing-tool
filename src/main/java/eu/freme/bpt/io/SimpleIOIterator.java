@@ -1,5 +1,8 @@
 package eu.freme.bpt.io;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
  * Institut für Angewandte Informatik e. V. an der Universität Leipzig,
@@ -21,11 +24,13 @@ package eu.freme.bpt.io;
  *
  */
 public class SimpleIOIterator implements IOIterator {
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final IO[] ios;
 	private int index = 0;
 
 	public SimpleIOIterator (IO... ios) {
 		this.ios = ios;
+		logger.debug("Created {}", this.getClass());
 	}
 
 	@Override

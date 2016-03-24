@@ -1,6 +1,8 @@
 package eu.freme.bpt.io;
 
 import eu.freme.bpt.common.Format;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
@@ -23,6 +25,11 @@ import java.io.File;
  *
  */
 public abstract class AbstractIOIterator implements IOIterator {
+	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	protected AbstractIOIterator() {
+		logger.debug("Created {}", this.getClass());
+	}
 
 	protected File getOutputFile(final File outputDir, final File inputFile, final Format outFormat) {
 		String outFileName = inputFile.getName();

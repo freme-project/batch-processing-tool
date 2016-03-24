@@ -39,6 +39,7 @@ public class SingleFileIOIterator extends AbstractIOIterator {
 		in = new BufferedInputStream(new FileInputStream(inputFile));
 		File outputFile = getOutputFile(outputDir, inputFile, outFormat);
 		out = new BufferedOutputStream(new FileOutputStream(outputFile));
+		logger.debug("Input file: {}, output file: {}", inputFile, outputFile);
 	}
 
 	/**
@@ -49,6 +50,7 @@ public class SingleFileIOIterator extends AbstractIOIterator {
 	public SingleFileIOIterator(final File inputFile) throws FileNotFoundException {
 		in = new BufferedInputStream(new FileInputStream(inputFile));
 		out = System.out;
+		logger.debug("Input file: {}, output: std out", inputFile);
 	}
 
 	@Override

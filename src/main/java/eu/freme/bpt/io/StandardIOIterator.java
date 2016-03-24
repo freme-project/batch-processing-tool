@@ -1,6 +1,8 @@
 package eu.freme.bpt.io;
 
 import eu.freme.bpt.common.Format;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 
@@ -27,6 +29,7 @@ import java.io.*;
 public class StandardIOIterator implements IOIterator {
 	private boolean hasNext = true;
 	private final OutputStream outputStream;
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public StandardIOIterator() {
 		outputStream = System.out;
@@ -35,6 +38,7 @@ public class StandardIOIterator implements IOIterator {
 	public StandardIOIterator(final File outputDir, final Format outFormat) throws FileNotFoundException {
 		File outputFile = new File(outputDir, "bpt_output." + outFormat.getFileExtension());
 		outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
+		logger.debug("Input: std in, output file: {}", outputFile);
 	}
 
 	@Override

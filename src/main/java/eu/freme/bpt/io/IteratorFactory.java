@@ -4,6 +4,8 @@ import eu.freme.bpt.common.Format;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
@@ -28,7 +30,6 @@ import java.io.IOException;
 public class IteratorFactory {
 
 	public static IOIterator create(final Format outFormat, final File outputDir, final File inputFile) throws IOException, IOCombinationNotPossibleException {
-
 		if (outputDir != null) {
 			if (!outputDir.exists()) {
 				if (!outputDir.mkdirs()) {
@@ -36,7 +37,7 @@ public class IteratorFactory {
 				}
 			} else {
 				if (outputDir.isFile()) {
-					throw new IOException("The given output is a file. Shoul be a directory: " + outputDir);
+					throw new IOException("The given output is a file. Should be a directory: " + outputDir);
 				}
 			}
 		}
@@ -62,6 +63,10 @@ public class IteratorFactory {
 				return new StandardIOIterator();
 			}
 		}
+	}
+
+	public static IOIterator create(final InputStream inputStream, final OutputStream outputStream) {
+		return new SimpleIOIterator(new IO(inputStream, outputStream));
 	}
 
 }

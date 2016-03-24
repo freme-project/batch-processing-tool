@@ -11,9 +11,7 @@ import eu.freme.bpt.util.FailurePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 
 import static eu.freme.bpt.service.EService.E_ENTITY;
 
@@ -43,6 +41,8 @@ public class BPT {
 	private BPTProperties properties = new BPTProperties();
 	private File input = null;
 	private File output = null;
+	private InputStream inputStream = null;
+	private OutputStream outputStream = null;
 	private Format inFormat = Format.turtle;
 	private Format outFormat = Format.turtle;
 
@@ -54,7 +54,7 @@ public class BPT {
 	 */
 	public BPT loadProperties(final String propertiesFile) throws IOException {
 		properties.load(propertiesFile);
-		logger.debug(properties.toString());
+		logger.debug("Properties loaded. {}", properties.toString());
 		return this;
 	}
 
@@ -78,9 +78,21 @@ public class BPT {
 		if (!input.canRead()) {
 			throw new IOException("File or directory " + fileOrDirectory + " cannot be read!");
 		}
-		logger.debug("Input file or directory {} set!", input);
+		logger.debug("Input file or directory {} set.", input);
 		return this;
 	}
+
+	/**
+	 * Set an InputStream as input
+	 * @param inputStream	The stream to process
+	 * @return				A BPT object with the InputStream set.
+	 */
+	public BPT setInput(final InputStream inputStream) {
+		this.inputStream = inputStream;
+		logger.debug("Input stream set.");
+		return this;
+	}
+
 
 	/**
 	 * Set a directory to write output in.
@@ -89,7 +101,19 @@ public class BPT {
 	 */
 	public BPT setOutput(final String outputDirectory) throws FileNotFoundException {
 		output = new File(outputDirectory);
+		logger.debug("Output directory {} set.", outputDirectory);
 		// no need to perform checks; this happens in IteratorFactory.
+		return this;
+	}
+
+	/**
+	 * Set an OutputStream to write the results to.
+	 * @param outputStream		The OutputStream to write results to.
+	 * @return					A BPT object withe the OutputStream set.
+	 */
+	public BPT setOutput(final OutputStream outputStream) {
+		this.outputStream = outputStream;
+		logger.debug("Output stream set.");
 		return this;
 	}
 
@@ -100,6 +124,7 @@ public class BPT {
 	 */
 	public BPT setInFormat(final Format inFormat) {
 		this.inFormat = inFormat;
+		logger.debug("Informat set to {}.", inFormat);
 		return this;
 	}
 
@@ -110,6 +135,7 @@ public class BPT {
 	 */
 	public BPT setOutFormat(final Format outFormat) {
 		this.outFormat = outFormat;
+		logger.debug("Outformat set to {}.", outFormat);
 		return this;
 	}
 
@@ -137,7 +163,13 @@ public class BPT {
 	}
 
 	private IOIterator ioIterator() throws IOException, IOCombinationNotPossibleException {
-		return IteratorFactory.create(outFormat, output, input);
+		if (inputStream != null && outputStream != null) {
+			logger.debug("Using given input and output stream.");
+			return IteratorFactory.create(inputStream, outputStream);
+		} else {
+			logger.debug("Trying to determine input and output from given file(s)");
+			return IteratorFactory.create(outFormat, output, input);
+		}
 	}
 
 	private FailurePolicy failurePolicy() {

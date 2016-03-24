@@ -1,8 +1,6 @@
 package eu.freme.bpt.io;
 
 import eu.freme.bpt.common.Format;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.*;
@@ -29,7 +27,6 @@ import java.util.*;
  *
  */
 public class DirectoryIOIterator extends AbstractIOIterator {
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final Iterator<File> fileIterator;
 	private final File outputDir;
 	private final Format outFormat;
@@ -45,6 +42,7 @@ public class DirectoryIOIterator extends AbstractIOIterator {
 		fileIterator = files.iterator();
 		outputDir = outputDirectory;
 		this.outFormat = outFormat;
+		logger.debug("Input directory: {}, output directory: {}", inputDirectory, outputDirectory);
 	}
 
 	@Override
@@ -56,7 +54,7 @@ public class DirectoryIOIterator extends AbstractIOIterator {
 	public IO next() {
 		File inFile = fileIterator.next();
 		File outFile = getOutputFile(outputDir, inFile, outFormat);
-
+		logger.debug("Input file: {}, output file: {}", inFile, outFile);
 		try {
 			InputStream inputStream = new BufferedInputStream(new FileInputStream(inFile));
 			OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outFile));
