@@ -13,10 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import static eu.freme.bpt.service.EService.*;
 
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche
@@ -41,8 +38,11 @@ public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
-        final List<String> services = Arrays.asList(E_ENTITY.getName(), E_LINK.getName(), E_PUBLISHING.getName(),
-				E_TERMINOLOGY.getName(), E_TRANSLATION.getName(), PIPELINING.getName(), E_PUBLISHING.getName());
+		final List<String> services = new ArrayList<>();
+		for (EService eService : EService.values()) {
+			services.add(eService.getName());
+		}
+
         Pair<EService, String[]> serviceAndArgs = extractService(args, services);
 
         EService service = serviceAndArgs.getName();
