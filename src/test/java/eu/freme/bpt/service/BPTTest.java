@@ -6,10 +6,15 @@ import eu.freme.bpt.io.IOCombinationNotPossibleException;
 import eu.freme.bpt.util.Pair;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -34,6 +39,12 @@ import static org.junit.Assert.assertTrue;
  */
 public class BPTTest {
 
+	/**
+	 * This test demonstrates how you can run the tool on a directory, and write output to a directory.
+	 * It uses the e-Entity service.
+	 * @throws IOException
+	 * @throws IOCombinationNotPossibleException
+	 */
 	@Test
 	public void testEntityInputDir() throws IOException, IOCombinationNotPossibleException {
 		Pair<Path, Path> outDirAndFile = copyToTemp("/scripts/input.txt");
@@ -49,6 +60,29 @@ public class BPTTest {
 		Path outFile = outDirAndFile.getValue().resolveSibling("input.ttl");
 		assertTrue(Files.exists(outFile));
 		Files.copy(outFile, System.out);
+	}
+
+	/**
+	 * This test demonstrates how you can run the tool on a given input stream, and let the results write to a given
+	 * output stream.
+	 * It uses the e-Entity service.
+	 * @throws IOException
+	 * @throws IOCombinationNotPossibleException
+	 */
+	@Test
+	public void testEntityStreams() throws IOException, IOCombinationNotPossibleException {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		try (InputStream in = new ByteArrayInputStream("Rachmaninov was a great Russian composer.".getBytes(StandardCharsets.UTF_8))) {
+			new BPT()
+					.setInput(in)
+					.setOutput(bos)
+					.setInFormat(Format.text)
+					.eEntity(null, null, null);
+		}
+
+		String output = bos.toString(StandardCharsets.UTF_8.name());
+		assertNotNull(output);
+		System.out.println(output);
 	}
 
 	private Pair<Path, Path> copyToTemp(final String classPathLocation) throws IOException {
