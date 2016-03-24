@@ -45,7 +45,7 @@ public class AbstractServiceTest {
 		BPTProperties properties = new BPTProperties();
 
 
-		ETranslation eTranslation = new ETranslation(properties.getETranslation(), ioIterator, Format.text, Format.turtle, "en", "de", null, null, null);
+		ETranslation eTranslation = new ETranslation(properties.getUriOf(EService.E_TRANSLATION), ioIterator, Format.text, Format.turtle, "en", "de", null, null, null);
 
 		eTranslation.run(FailurePolicy.create(FailurePolicy.Strategy.ABORT, null), 4);
 		System.out.println("translation: " + outputStream.toString(StandardCharsets.UTF_8.name()));

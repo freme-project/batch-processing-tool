@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static eu.freme.bpt.service.EService.*;
+
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche
  * Intelligenz, iMinds, Institut für Angewandte Informatik e. V. an der
@@ -39,10 +41,11 @@ public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
-        final List<String> services = Arrays.asList("e-entity", "e-link", "e-publishing", "e-terminology", "e-translation", "pipelining");
-        Pair<String, String[]> serviceAndArgs = extractService(args, services);
+        final List<String> services = Arrays.asList(E_ENTITY.getName(), E_LINK.getName(), E_PUBLISHING.getName(),
+				E_TERMINOLOGY.getName(), E_TRANSLATION.getName(), PIPELINING.getName(), E_PUBLISHING.getName());
+        Pair<EService, String[]> serviceAndArgs = extractService(args, services);
 
-        String service = serviceAndArgs.getName();
+        EService service = serviceAndArgs.getName();
 
         // create options that will be parsed from the args
         /////// General BPT options ///////
@@ -68,18 +71,22 @@ public class Main {
         /////// Service specific options ///////
         if (service != null) {
             switch (service) {
-                case "e-translation":
+				case E_TRANSLATION:
                     ETranslation.addOptions(options);
                     break;
-                case "e-entity":
+				case E_ENTITY:
                     EEntity.addOptions(options);
                     break;
-                case "e-link":
+				case E_LINK:
                     ELink.addOptions(options);
                     break;
-                case "e-terminology":
+				case E_TERMINOLOGY:
                     ETerminology.addOptions(options);
                     break;
+				case PIPELINING:
+					// TODO !
+				case E_PUBLISHING:
+					// TODO !
                 default:
                     logger.warn("Unknown service {}. Skipping!", service);
                     break;
@@ -122,10 +129,11 @@ public class Main {
 			ioIterator = IteratorFactory.create(configuration.getOutFormat(), configuration.getOutputDir(), configuration.getInputFile());
 
 			Service eService;
+			String endpoint = properties.getUriOf(service);
 			switch (service) {
-				case "e-translation":
+				case E_TRANSLATION:
 					eService = new ETranslation(
-							properties.getETranslation(),
+							endpoint,
 							ioIterator,
 							configuration.getInFormat(),
 							configuration.getOutFormat(),
@@ -136,9 +144,9 @@ public class Main {
 							configuration.getKey()
 					);
 					break;
-				case "e-entity":
+				case E_ENTITY:
 					eService = new EEntity(
-							properties.getEEntity(),
+							endpoint,
 							ioIterator,
 							configuration.getInFormat(),
 							configuration.getOutFormat(),
@@ -147,18 +155,18 @@ public class Main {
 							configuration.getMode()
 					);
 					break;
-				case "e-link":
+				case E_LINK:
 					eService = new ELink(
-							properties.getELink(),
+							endpoint,
 							ioIterator,
 							configuration.getInFormat(),
 							configuration.getOutFormat(),
 							configuration.getTemplateID()
 					);
 					break;
-				case "e-terminology":
+				case E_TERMINOLOGY:
 					eService = new ETerminology(
-							properties.getETerminology(),
+							endpoint,
 							ioIterator,
 							configuration.getInFormat(),
 							configuration.getOutFormat(),
@@ -170,6 +178,9 @@ public class Main {
 							configuration.getMode()
 					);
 					break;
+				case E_PUBLISHING:
+				case PIPELINING:
+					// TODO !
 				default:
 					logger.error("Unknown service {}. Aborting!", service);
 					System.exit(3);
@@ -193,14 +204,15 @@ public class Main {
      * @param services The list of registered services.
      * @return	The service name if found, or {@code null} if not found.
      */
-    private static Pair<String, String[]> extractService(String[] args, final List<String> services) {
-        String foundService = null;
+    private static Pair<EService, String[]> extractService(String[] args, final List<String> services) {
+        EService foundService = null;
         List<String> newArgs = new ArrayList<>(args.length);
         for (String arg : args) {
             if (!services.contains(arg)) {
                 newArgs.add(arg);
             } else {
-                foundService = arg;
+				String serviceName = arg.toUpperCase().replace('-', '_');
+                foundService = EService.valueOf(serviceName);
             }
         }
         return new Pair<>(foundService, newArgs.toArray(new String[newArgs.size()]));

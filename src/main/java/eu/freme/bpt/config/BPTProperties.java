@@ -1,5 +1,6 @@
 package eu.freme.bpt.config;
 
+import eu.freme.bpt.service.EService;
 import eu.freme.bpt.util.FailurePolicy;
 
 import java.io.FileInputStream;
@@ -49,27 +50,7 @@ public class BPTProperties {
 		return properties.getProperty("prefix", "http://freme-project.eu/");
 	}
 
-	public String getEEntity() {
-		return properties.getProperty("e-entity", "http://api.freme-project.eu/current/e-entity/freme-ner/documents");
-	}
-
-	public String getELink() {
-		return properties.getProperty("e-link", "http://api.freme-project.eu/current/e-link/documents");
-	}
-
-	public String getEPublishing() {
-		return properties.getProperty("e-publishing", "http://api.freme-project.eu/current/e-publishing/html");
-	}
-
-	public String getETerminology() {
-		return properties.getProperty("e-terminology", "http://api.freme-project.eu/current/e-terminology/tilde");
-	}
-
-	public String getETranslation() {
-		return properties.getProperty("e-translation", "http://api.freme-project.eu/current/e-translation/tilde");
-	}
-
-	public String getPipelining() {
-		return properties.getProperty("pipelining", "http://api.freme-project.eu/current/pipelining/chain");
+	public String getUriOf(final EService service) {
+		return properties.getProperty(service.getName(), service.getDefaultUrl());
 	}
 }
