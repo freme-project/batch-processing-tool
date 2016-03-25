@@ -5,10 +5,7 @@ import eu.freme.bpt.config.BPTProperties;
 import eu.freme.bpt.io.IOCombinationNotPossibleException;
 import eu.freme.bpt.io.IOIterator;
 import eu.freme.bpt.io.IteratorFactory;
-import eu.freme.bpt.service.EEntity;
-import eu.freme.bpt.service.ELink;
-import eu.freme.bpt.service.ETerminology;
-import eu.freme.bpt.service.Service;
+import eu.freme.bpt.service.*;
 import eu.freme.bpt.util.FailurePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,7 +128,7 @@ public class BPT {
 	}
 
 	/**
-	 * Set the format of the output
+	 * Set the format of the output.
 	 * @param outFormat	The format of the output
 	 * @return		A BPT object with the output format set.
 	 */
@@ -161,7 +158,7 @@ public class BPT {
 	}
 
 	/**
-	 * Invoke the e-Link service
+	 * Invoke the e-Link service.
 	 * @param templateId	The ID of the template to be used.
 	 * @throws IOException	Something went wrong processing input or output.
 	 * @throws IOCombinationNotPossibleException	The combination input and output is not valid. E.g.: If the input is a directory, the output should also be a directory, not a stream.
@@ -177,15 +174,15 @@ public class BPT {
 	}
 
 	/**
-	 * Invoke the e-Terminology service
+	 * Invoke the e-Terminology service.
 	 * @param sourceLang    OPTIONAL. The language of the input. The default is {@code en}
 	 * @param targetLang	OPTIONAL. The language of the output. The default is {@code en}
 	 * @param collection    Collection ID from https://term.tilde.com portal.
 	 * @param domain        OPTIONAL. Filters out by domain proposed terms
 	 * @param key           OPTIONAL. A private key to access private and not publicly available translation systems.
 	 * @param mode          OPTIONAL. Whether the result must contain full terminology information or only term annotations with references to the full information.
-	 * @throws IOException
-	 * @throws IOCombinationNotPossibleException
+	 * @throws IOException  Something went wrong processing input or output.
+	 * @throws IOCombinationNotPossibleException	The combination input and output is not valid. E.g.: If the input is a directory, the output should also be a directory, not a stream.
 	 */
 	public void eTerminology(final String sourceLang, final String targetLang, final String collection, final String domain, final String key, final String mode) throws IOException, IOCombinationNotPossibleException {
 		Service service = new ETerminology(properties.getUriOf(E_TERMINOLOGY),
@@ -201,6 +198,31 @@ public class BPT {
 				);
 		run(service);
 	}
+
+	/**
+	 * Invoke the e-Translation service.
+	 * @param sourceLang    OPTIONAL. The language of the input. The default is {@code en}
+	 * @param targetLang	OPTIONAL. The language of the output. The default is {@code en}
+	 * @param system    	OPTIONAL. ID of the translation system to be used. Overwrites source-lang, target-lang and domain.
+	 * @param domain        OPTIONAL. Filters out by domain proposed terms
+	 * @param key           OPTIONAL. A private key to access private and not publicly available translation systems.
+	 * @throws IOException	Something went wrong processing input or output.
+	 * @throws IOCombinationNotPossibleException	The combination input and output is not valid. E.g.: If the input is a directory, the output should also be a directory, not a stream.
+	 */
+	public void eTranslation(final String sourceLang, final String targetLang, final String system, final String domain, final String key) throws IOException, IOCombinationNotPossibleException {
+		Service service = new ETranslation(properties.getUriOf(E_TRANSLATION),
+				ioIterator(),
+				inFormat,
+				outFormat,
+				sourceLang,
+				targetLang,
+				system,
+				domain,
+				key);
+		run(service);
+	}
+
+	// TODO: e-Publishing, Pipelining
 
 	private void run(final Service service) {
 		service.run(failurePolicy(), properties.getThreads());
