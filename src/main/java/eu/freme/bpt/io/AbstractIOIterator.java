@@ -38,6 +38,11 @@ public abstract class AbstractIOIterator implements IOIterator {
 			outFileName = outFileName.substring(0, pointIndex);
 		}
 		outFileName += "." + outFormat.getFileExtension();
-		return new File(outputDir, outFileName);
+		File outputFile = new File(outputDir, outFileName);
+		if (inputFile.getAbsolutePath().equals(outputFile.getAbsolutePath())) {
+			outFileName = "out_" + outFileName;
+			outputFile = new File(outputDir, outFileName);
+		}
+		return outputFile;
 	}
 }

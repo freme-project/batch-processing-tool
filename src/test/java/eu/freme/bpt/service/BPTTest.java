@@ -85,6 +85,28 @@ public class BPTTest {
 		System.out.println(output);
 	}
 
+	/**
+	 * Test to see what happens if the input- and output dir are the same, AND the input- and output format are the same.
+	 * Output files should be prefixed with 'out_' .
+	 * @throws IOException
+	 * @throws IOCombinationNotPossibleException
+	 */
+	@Test
+	public void testEntitySameInputAndOutput() throws IOException, IOCombinationNotPossibleException {
+		Pair<Path, Path> outDirAndFile = copyToTemp("/scripts/input4.ttl");
+		Path inputDir = outDirAndFile.getName();
+
+		new BPT()
+				.setInput(inputDir.toAbsolutePath().toString())
+				.setOutput(inputDir.toAbsolutePath().toString())
+				.eEntity("en", "dbpedia", null);
+
+		// check if output file exists and print to std out
+		Path outFile = outDirAndFile.getValue().resolveSibling("out_input4.ttl");
+		assertTrue(Files.exists(outFile));
+		Files.copy(outFile, System.out);
+	}
+
 	private Pair<Path, Path> copyToTemp(final String classPathLocation) throws IOException {
 		Path tempDir = Files.createTempDirectory("bpttest");
 		Path tempFile = tempDir.resolve(classPathLocation.substring(classPathLocation.lastIndexOf('/') + 1));
