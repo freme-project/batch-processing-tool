@@ -1,17 +1,12 @@
 package eu.freme.bpt;
 
-import eu.freme.bpt.config.BPTProperties;
-import eu.freme.bpt.config.Configuration;
-import eu.freme.bpt.io.IOIterator;
-import eu.freme.bpt.io.IteratorFactory;
+import eu.freme.bpt.common.Format;
 import eu.freme.bpt.service.*;
-import eu.freme.bpt.util.FailurePolicy;
 import eu.freme.bpt.util.Pair;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,65 +112,51 @@ public class Main {
 
         logger.debug("Commandline successfully parsed!");
 
-        // Iterate over the input source(s)
-        IOIterator ioIterator;
         try {
-            Configuration configuration = Configuration.create(commandLine);
-			BPTProperties properties = configuration.getProperties();
+			BPT batchProcessingTool = new BPT();
+			if (commandLine.hasOption("prop")) {
+				batchProcessingTool.loadProperties(commandLine.getOptionValue("prop"));
+			}
+			if (commandLine.hasOption("if")) {
+				batchProcessingTool.setInput(commandLine.getOptionValue("if"));
+			}
+			if (commandLine.hasOption("od")) {
+				batchProcessingTool.setOutput(commandLine.getOptionValue("od"));
+			}
+			if (commandLine.hasOption('f')) {
+				batchProcessingTool.setInFormat(Format.valueOf(commandLine.getOptionValue('f')));
+			}
+			if (commandLine.hasOption('o')) {
+				batchProcessingTool.setOutFormat(Format.valueOf(commandLine.getOptionValue('o')));
+			}
 
-			FailurePolicy.Strategy failureStrategy = properties.getFailureStrategy();
-			File outputDir = commandLine.hasOption("od") ? new File(commandLine.getOptionValue("od")) : null;
-			FailurePolicy failurePolicy = FailurePolicy.create(failureStrategy, outputDir);
-			ioIterator = IteratorFactory.create(configuration.getOutFormat(), configuration.getOutputDir(), configuration.getInputFile());
-
-			Service eService;
-			String endpoint = properties.getUriOf(service);
 			switch (service) {
 				case E_TRANSLATION:
-					eService = new ETranslation(
-							endpoint,
-							ioIterator,
-							configuration.getInFormat(),
-							configuration.getOutFormat(),
-							configuration.getSourceLang(),
-							configuration.getTargetLang(),
-							configuration.getSystem(),
-							configuration.getDomain(),
-							configuration.getKey()
-					);
+					batchProcessingTool.eTranslation(
+							commandLine.getOptionValue("source-lang"),
+							commandLine.getOptionValue("target-lang"),
+							commandLine.getOptionValue("system"),
+							commandLine.getOptionValue("domain"),
+							commandLine.getOptionValue("key"));
 					break;
 				case E_ENTITY:
-					eService = new EEntity(
-							endpoint,
-							ioIterator,
-							configuration.getInFormat(),
-							configuration.getOutFormat(),
-							configuration.getLanguage(),
-							configuration.getDataset(),
-							configuration.getMode()
-					);
+					batchProcessingTool.eEntity(
+							commandLine.getOptionValue("language"),
+							commandLine.getOptionValue("dataset"),
+							commandLine.getOptionValue("mode")
+							);
 					break;
 				case E_LINK:
-					eService = new ELink(
-							endpoint,
-							ioIterator,
-							configuration.getInFormat(),
-							configuration.getOutFormat(),
-							configuration.getTemplateID()
-					);
+					batchProcessingTool.eLink(commandLine.getOptionValue("templateid"));
 					break;
 				case E_TERMINOLOGY:
-					eService = new ETerminology(
-							endpoint,
-							ioIterator,
-							configuration.getInFormat(),
-							configuration.getOutFormat(),
-							configuration.getSourceLang(),
-							configuration.getTargetLang(),
-							configuration.getCollection(),
-							configuration.getDomain(),
-							configuration.getKey(),
-							configuration.getMode()
+					batchProcessingTool.eTerminology(
+							commandLine.getOptionValue("source-lang"),
+							commandLine.getOptionValue("target-lang"),
+							commandLine.getOptionValue("collection"),
+							commandLine.getOptionValue("domain"),
+							commandLine.getOptionValue("key"),
+							commandLine.getOptionValue("mode")
 					);
 					break;
 				case E_PUBLISHING:
@@ -184,11 +165,7 @@ public class Main {
 				default:
 					logger.error("Unknown service {}. Aborting!", service);
 					System.exit(3);
-					return;
-
 			}
-
-			eService.run(failurePolicy, properties.getThreads());
         } catch (Exception e) {
             logger.error("Cannot handle input or output. Reason: ", e);
             System.exit(2);
