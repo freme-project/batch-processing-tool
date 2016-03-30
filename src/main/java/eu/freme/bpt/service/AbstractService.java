@@ -62,12 +62,10 @@ public abstract class AbstractService implements Service {
 		Unirest.setTimeouts(30000, 300000);	// TODO: configurable?
 		while (ioIterator.hasNext()) {
 			final IO io = ioIterator.next();
-			final InputStream inputStream = io.getInputStream();
-			final OutputStream outputStream = io.getOutputStream();
 
 			tasks.add(executorService.submit(() -> {
 				boolean success = false;
-				try {
+				try (final InputStream inputStream = io.getInputStream(); final OutputStream outputStream = io.getOutputStream()) {
 					byte[] input = IOUtils.toByteArray(inputStream);
 					HttpResponse<InputStream> response = Unirest.post(endpoint).headers(headers).queryString(parameters).body(input).asBinary();
 					if (response.getStatus() == 200) {
@@ -91,13 +89,6 @@ public abstract class AbstractService implements Service {
 					}
 				} catch (Exception e) {
 					logger.error("Request to {} failed." + endpoint, e);
-				} finally {
-					try {
-						inputStream.close();
-						outputStream.close();
-					} catch (IOException e) {
-						// not important
-					}
 				}
 				return success;
 			}));
