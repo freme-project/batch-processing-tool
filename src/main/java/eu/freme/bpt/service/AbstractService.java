@@ -107,7 +107,6 @@ public abstract class AbstractService implements Service {
 					}
 				}
 			});
-
 			executorService.shutdown();
 		}
 		try {
@@ -115,6 +114,7 @@ public abstract class AbstractService implements Service {
 		} catch (InterruptedException e) {
 			logger.warn("Waiting on termination interrupted.");
 		}
+		callback.onBatchComplete();
 	}
 
 	@Override

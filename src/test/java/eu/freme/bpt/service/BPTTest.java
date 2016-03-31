@@ -94,6 +94,11 @@ public class BPTTest {
 						System.out.println("Task fails!!");
 						fail("This should not go wrong!");
 					}
+
+					@Override
+					public void onBatchComplete() {
+						System.out.println("Ready!!!");
+					}
 				})
 				.eEntity("en", "dbpedia", null);
 

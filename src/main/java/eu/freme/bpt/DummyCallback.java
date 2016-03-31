@@ -36,4 +36,9 @@ public class DummyCallback implements Callback {
 	public void onTaskFails(File inputFile, File outputFile, final String reason) {
 		logger.debug("onTaskFails: {}, {}. reason: {}", inputFile, outputFile, reason);
 	}
+
+	@Override
+	public void onBatchComplete() {
+		logger.debug("onBatchComplete");
+	}
 }

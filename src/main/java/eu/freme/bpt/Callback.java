@@ -22,4 +22,6 @@ import java.io.File;
 public interface Callback {
 	void onTaskComplete(final File inputFile, final File outputFile);
 	void onTaskFails(final File inputFile, final File outputFile, final String reason);
+	void onBatchComplete();
+	// TODO: onBatchComplete ?
 }
