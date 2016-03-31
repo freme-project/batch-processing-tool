@@ -1,21 +1,18 @@
 package eu.freme.bpt.service;
 
 import eu.freme.bpt.BPT;
+import eu.freme.bpt.Callback;
 import eu.freme.bpt.common.Format;
 import eu.freme.bpt.io.IOCombinationNotPossibleException;
 import eu.freme.bpt.util.Pair;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
@@ -60,6 +57,54 @@ public class BPTTest {
 		Path outFile = outDirAndFile.getValue().resolveSibling("input.ttl");
 		assertTrue(Files.exists(outFile));
 		Files.copy(outFile, System.out);
+	}
+
+	/**
+	 * This test demonstrates how you can run the tool on a directory, and write output to a directory. It runs in the
+	 * background
+	 * It uses the e-Entity service.
+	 * @throws IOException
+	 * @throws IOCombinationNotPossibleException
+	 */
+	@Test
+	public void testEntityInputDirBackground() throws IOException, IOCombinationNotPossibleException {
+		Pair<Path, Path> outDirAndFile = copyToTemp("/scripts/input.txt");
+		Path inputDir = outDirAndFile.getName();
+
+		new BPT()
+				.setInput(inputDir.toAbsolutePath().toString())
+				.setOutput(inputDir.toAbsolutePath().toString())
+				.setInFormat(Format.text)
+				.registerCallback(new Callback() {
+					@Override
+					public void onTaskComplete(File inputFile, File outputFile) {
+						System.out.println("This is the callback calling: task complete!!");
+						// check if output file exists and print to std out
+						Path outFile = outDirAndFile.getValue().resolveSibling("input.ttl");
+						assertTrue(Files.exists(outFile));
+						try {
+							Files.copy(outFile, System.out);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+
+					@Override
+					public void onTaskFails(File inputFile, File outputFile, String reason) {
+						System.out.println("Task fails!!");
+						fail("This should not go wrong!");
+					}
+				})
+				.eEntity("en", "dbpedia", null);
+
+		for (int i = 10; i > 0; i--) {
+			System.out.println("Waiting for " + i + " more seconds!");
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**

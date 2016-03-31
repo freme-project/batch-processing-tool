@@ -1,5 +1,6 @@
 package eu.freme.bpt.service;
 
+import eu.freme.bpt.DummyCallback;
 import eu.freme.bpt.common.Format;
 import eu.freme.bpt.config.BPTProperties;
 import eu.freme.bpt.io.IO;
@@ -47,7 +48,7 @@ public class AbstractServiceTest {
 
 		ETranslation eTranslation = new ETranslation(properties.getUriOf(EService.E_TRANSLATION), ioIterator, Format.text, Format.turtle, "en", "de", null, null, null);
 
-		eTranslation.run(FailurePolicy.create(FailurePolicy.Strategy.ABORT, null), 4);
+		eTranslation.run(FailurePolicy.create(FailurePolicy.Strategy.ABORT, null), 4, new DummyCallback());
 		System.out.println("translation: " + outputStream.toString(StandardCharsets.UTF_8.name()));
 
 	}

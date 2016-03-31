@@ -2,6 +2,7 @@ package eu.freme.bpt.service;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
+import eu.freme.bpt.Callback;
 import eu.freme.bpt.common.Format;
 import eu.freme.bpt.io.IO;
 import eu.freme.bpt.io.IOIterator;
@@ -13,8 +14,11 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
@@ -55,16 +59,14 @@ public abstract class AbstractService implements Service {
 		parameters = new HashMap<>(3);
 	}
 
-	public void run(final FailurePolicy failurePolicy, int nrThreads) {
+	public void run(final FailurePolicy failurePolicy, final int nrThreads, final Callback callback) {
 		logger.info("Running service {}", this.getClass().getName());
 		ExecutorService executorService = Executors.newFixedThreadPool(nrThreads);
-		Set<Future<Boolean>> tasks = new HashSet<>();
 		Unirest.setTimeouts(30000, 300000);	// TODO: configurable?
 		while (ioIterator.hasNext()) {
 			final IO io = ioIterator.next();
 
-			tasks.add(executorService.submit(() -> {
-				boolean success = false;
+			executorService.submit(() -> {
 				try (final InputStream inputStream = io.getInputStream(); final OutputStream outputStream = io.getOutputStream()) {
 					byte[] input = IOUtils.toByteArray(inputStream);
 					HttpResponse<InputStream> response = Unirest.post(endpoint).headers(headers).queryString(parameters).body(input).asBinary();
@@ -73,9 +75,14 @@ public abstract class AbstractService implements Service {
 						InputStream responseInput = response.getBody();
 						try {
 							IOUtils.copy(responseInput, outputStream);
-							success = true;
+							//success = true;
+							callback.onTaskComplete(io.getInputFile(), io.getOutputFile());
 						} catch (IOException e) {
 							logger.error("Error while writing response.", e);
+							callback.onTaskFails(io.getInputFile(), io.getOutputFile(), "Error while writing response. " + e.getMessage());
+							if (!failurePolicy.check()) {
+								System.exit(3);
+							}
 						} finally {
 							try {
 								responseInput.close();
@@ -85,51 +92,34 @@ public abstract class AbstractService implements Service {
 						}
 					} else {
 						String body = IOUtils.toString(response.getBody());
-						logger.error("Error response from service {}: Status {}: {} - {}", endpoint, response.getStatus(), response.getStatusText(), body);
-					}
-				} catch (Exception e) {
-					logger.error("Request to {} failed." + endpoint, e);
-				}
-				return success;
-			}));
-
-			executorService.shutdown();
-			while (!executorService.isTerminated()) {
-				Iterator<Future<Boolean>> resultIter = tasks.iterator();
-				Future<Boolean> result = resultIter.next();
-				if (result.isDone()) {
-					boolean success;
-					try {
-						success = result.get();
-					} catch (CancellationException | ExecutionException | InterruptedException e) {
-						success = false;
-					}
-					if (!success) {
-						logger.warn("A task failed!");
+						String msg = "Error response from service " + endpoint + ": Status " + response.getStatus() + ": " + response.getStatusText() + " - " + body;
+						logger.error(msg);
+						callback.onTaskFails(io.getInputFile(), io.getOutputFile(), msg);
 						if (!failurePolicy.check()) {
 							System.exit(3);
 						}
-					} else {
-						logger.info("Success!");
 					}
-					resultIter.remove();
+				} catch (Exception e) {
+					logger.error("Request to {} failed." + endpoint, e);
+					callback.onTaskFails(io.getInputFile(), io.getOutputFile(), "Request to " + endpoint + " failed. " + e.getMessage());
+					if (!failurePolicy.check()) {
+						System.exit(3);
+					}
 				}
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// not important...
-				}
-			}
+			});
+
+			executorService.shutdown();
 		}
 		try {
 			executorService.awaitTermination(1, TimeUnit.DAYS);
 		} catch (InterruptedException e) {
 			logger.warn("Waiting on termination interrupted.");
 		}
-		try {
-			Unirest.shutdown();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	}
+
+	@Override
+	public void close() throws IOException {
+		Unirest.shutdown();
+		logger.debug("Service {} shut down.", getClass().getName());
 	}
 }

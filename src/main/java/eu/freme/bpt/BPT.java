@@ -44,6 +44,7 @@ public class BPT {
 	private OutputStream outputStream = null;
 	private Format inFormat = Format.turtle;
 	private Format outFormat = Format.turtle;
+	private Callback callback = new DummyCallback();
 
 	/**
 	 * Load properties from a given file.
@@ -57,8 +58,10 @@ public class BPT {
 		return this;
 	}
 
-	// TODO: asynchonous mode
-	//public BPT registerCallback() {	}
+	public BPT registerCallback(final Callback callback) {
+		this.callback = callback;
+		return this;
+	}
 
 	// TODO: user auth
 
@@ -225,7 +228,24 @@ public class BPT {
 	// TODO: e-Publishing, Pipelining
 
 	private void run(final Service service) {
-		service.run(failurePolicy(), properties.getThreads());
+		if (callback instanceof DummyCallback) {
+			service.run(failurePolicy(), properties.getThreads(), callback);
+			try {
+				service.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			Thread serviceThread = new Thread(() -> {
+				service.run(failurePolicy(), properties.getThreads(), callback);
+				try {
+					service.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}, "serviceThread");
+			serviceThread.start();
+		}
 	}
 
 	private IOIterator ioIterator() throws IOException, IOCombinationNotPossibleException {

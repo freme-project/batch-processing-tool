@@ -1,10 +1,9 @@
-package eu.freme.bpt.io;
+package eu.freme.bpt;
 
-import eu.freme.bpt.common.Format;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
 
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
@@ -23,34 +22,18 @@ import java.io.*;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Does not really iterate, just returns the standard InputStream. Always allows one iteration.
- *
  */
-public class StandardIOIterator implements IOIterator {
-	private boolean hasNext = true;
-	private final OutputStream outputStream;
+public class DummyCallback implements Callback {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	private final File outputFile;
 
-	public StandardIOIterator() {
-		outputStream = System.out;
-		outputFile = null;
-	}
 
-	public StandardIOIterator(final File outputDir, final Format outFormat) throws FileNotFoundException {
-		outputFile = new File(outputDir, "bpt_output." + outFormat.getFileExtension());
-		outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
-		logger.debug("Input: std in, output file: {}", outputFile);
+	@Override
+	public void onTaskComplete(File inputFile, File outputFile) {
+		logger.debug("onTaskComplete: {}, {}", inputFile, outputFile);
 	}
 
 	@Override
-	public boolean hasNext() {
-		return hasNext;
-	}
-
-	@Override
-	public IO next() {
-		hasNext = false;
-		return new IO(System.in, outputStream, null, outputFile);
+	public void onTaskFails(File inputFile, File outputFile, final String reason) {
+		logger.debug("onTaskFails: {}, {}. reason: {}", inputFile, outputFile, reason);
 	}
 }

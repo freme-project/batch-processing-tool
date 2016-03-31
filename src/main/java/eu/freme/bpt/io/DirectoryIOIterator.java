@@ -58,7 +58,7 @@ public class DirectoryIOIterator extends AbstractIOIterator {
 		try {
 			InputStream inputStream = new BufferedInputStream(new FileInputStream(inFile));
 			OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outFile));
-			return new IO(inputStream, outputStream);
+			return new IO(inputStream, outputStream, inFile, outFile);
 		} catch (FileNotFoundException e) {
 			logger.error("Could not create input stream from file {}.", inFile, e);
 			throw new NoSuchElementException(e.getMessage());

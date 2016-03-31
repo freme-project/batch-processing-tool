@@ -28,6 +28,8 @@ public class SingleFileIOIterator extends AbstractIOIterator {
 	private boolean hasNext = true;
 	private final InputStream in;
 	private final OutputStream out;
+	private final File inputFile;
+	private final File outputFile;
 
 	/**
 	 * Creates a SingleFileIOIterator from the given file.
@@ -36,8 +38,9 @@ public class SingleFileIOIterator extends AbstractIOIterator {
 	 * @throws FileNotFoundException	The given file is not found.
 	 */
 	public SingleFileIOIterator(final File inputFile, final File outputDir, final Format outFormat) throws FileNotFoundException {
+		this.inputFile = inputFile;
 		in = new BufferedInputStream(new FileInputStream(inputFile));
-		File outputFile = getOutputFile(outputDir, inputFile, outFormat);
+		outputFile = getOutputFile(outputDir, inputFile, outFormat);
 		out = new BufferedOutputStream(new FileOutputStream(outputFile));
 		logger.debug("Input file: {}, output file: {}", inputFile, outputFile);
 	}
@@ -48,8 +51,10 @@ public class SingleFileIOIterator extends AbstractIOIterator {
 	 * @throws FileNotFoundException	The given file is not found.
 	 */
 	public SingleFileIOIterator(final File inputFile) throws FileNotFoundException {
+		this.inputFile = inputFile;
 		in = new BufferedInputStream(new FileInputStream(inputFile));
 		out = System.out;
+		outputFile = null;
 		logger.debug("Input file: {}, output: std out", inputFile);
 	}
 
@@ -61,6 +66,6 @@ public class SingleFileIOIterator extends AbstractIOIterator {
 	@Override
 	public IO next() {
 		hasNext = false;
-		return new IO(in, out);
+		return new IO(in, out, inputFile, outputFile);
 	}
 }

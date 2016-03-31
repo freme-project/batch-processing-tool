@@ -1,9 +1,6 @@
-package eu.freme.bpt.service;
+package eu.freme.bpt;
 
-import eu.freme.bpt.Callback;
-import eu.freme.bpt.util.FailurePolicy;
-
-import java.io.Closeable;
+import java.io.File;
 
 /**
  * Copyright (C) 2016 Agroknow, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds,
@@ -21,10 +18,8 @@ import java.io.Closeable;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Represents a FREME service
- *
  */
-public interface Service extends Closeable {
-	void run(final FailurePolicy failurePolicy, int nrThreads, final Callback callback);
+public interface Callback {
+	void onTaskComplete(final File inputFile, final File outputFile);
+	void onTaskFails(final File inputFile, final File outputFile, final String reason);
 }

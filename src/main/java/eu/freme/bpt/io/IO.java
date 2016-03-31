@@ -1,5 +1,6 @@
 package eu.freme.bpt.io;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -27,10 +28,18 @@ import java.io.OutputStream;
 public class IO {
 	private final InputStream inputStream;
 	private final OutputStream outputStream;
+	private final File inputFile;
+	private final File outputFile;
 
 	public IO(InputStream inputStream, OutputStream outputStream) {
+		this(inputStream, outputStream, null, null);
+	}
+
+	public IO(InputStream inputStream, OutputStream outputStream, File inputFile, File outputFile) {
 		this.inputStream = inputStream;
 		this.outputStream = outputStream;
+		this.inputFile = inputFile;
+		this.outputFile = outputFile;
 	}
 
 	public InputStream getInputStream() {
@@ -39,5 +48,13 @@ public class IO {
 
 	public OutputStream getOutputStream() {
 		return outputStream;
+	}
+
+	public File getInputFile() {
+		return inputFile;
+	}
+
+	public File getOutputFile() {
+		return outputFile;
 	}
 }
