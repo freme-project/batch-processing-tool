@@ -142,7 +142,7 @@ public class BPT {
 	}
 
 	/**
-	 * Invoke the eEntity service
+	 * Invoke the e-Entity service
 	 * @param language      OPTIONAL. The language of the input. The default is {@code en}.
 	 * @param dataset		OPTIONAL. The dataset used for entity linking. The default is {@code dbpedia}.
 	 * @param mode			OPTIONAL. Allows to produce only partly results of named entity recognition. the default is {@code all}
@@ -168,6 +168,22 @@ public class BPT {
 	 */
 	public void eLink(final String templateId) throws IOException, IOCombinationNotPossibleException {
 		Service service = new ELink(properties.getUriOf(E_LINK),
+				ioIterator(),
+				inFormat,
+				outFormat,
+				templateId
+				);
+		run(service);
+	}
+
+	/**
+	 * Invoke the Pipelining service
+	 * @param templateId	The ID of the template to be used.
+	 * @throws IOException  Something went wrong processing input or output.
+	 * @throws IOCombinationNotPossibleException	The combination input and output is not valid. E.g.: If the input is a directory, the output should also be a directory, not a stream.
+	 */
+	public void pipelining(final String templateId) throws IOException, IOCombinationNotPossibleException {
+		Service service = new Pipelining(properties.getUriOf(PIPELINING),
 				ioIterator(),
 				inFormat,
 				outFormat,

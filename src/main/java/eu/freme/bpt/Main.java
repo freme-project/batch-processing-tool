@@ -79,7 +79,8 @@ public class Main {
                     ETerminology.addOptions(options);
                     break;
 				case PIPELINING:
-					// TODO !
+					Pipelining.addOptions(options);
+					break;
 				case E_PUBLISHING:
 					// TODO !
                 default:
@@ -91,6 +92,7 @@ public class Main {
             EEntity.addOptions(options);
             ELink.addOptions(options);
             ETerminology.addOptions(options);
+			Pipelining.addOptions(options);
         }
 
         CommandLine commandLine = null;
@@ -159,9 +161,10 @@ public class Main {
 							commandLine.getOptionValue("mode")
 					);
 					break;
-				case E_PUBLISHING:
 				case PIPELINING:
-					// TODO !
+					batchProcessingTool.pipelining(commandLine.getOptionValue("templateid"));
+					break;
+				case E_PUBLISHING:
 				default:
 					logger.error("Unknown service {}. Aborting!", service);
 					System.exit(3);
