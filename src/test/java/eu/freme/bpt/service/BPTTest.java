@@ -157,6 +157,23 @@ public class BPTTest {
 		Files.copy(outFile, System.out);
 	}
 
+	@Test
+	public void testPipelining() throws IOException, IOCombinationNotPossibleException {
+		Pair<Path, Path> outDirAndFile = copyToTemp("/scripts/input2.txt");
+		Path inputDir = outDirAndFile.getName();
+
+		new BPT()
+				.setInput(inputDir.toAbsolutePath().toString())
+				.setOutput(inputDir.toAbsolutePath().toString())
+				.setInFormat(Format.text)
+				.pipelining("34");
+
+		// check if output file exists and print to std out
+		Path outFile = outDirAndFile.getValue().resolveSibling("input2.ttl");
+		assertTrue(Files.exists(outFile));
+		Files.copy(outFile, System.out);
+	}
+
 	private Pair<Path, Path> copyToTemp(final String classPathLocation) throws IOException {
 		Path tempDir = Files.createTempDirectory("bpttest");
 		Path tempFile = tempDir.resolve(classPathLocation.substring(classPathLocation.lastIndexOf('/') + 1));

@@ -42,8 +42,7 @@ public class Pipelining extends AbstractService {
 					  final Format inFormat,
 					  final Format outFormat,
 					  final String templateId) {
-		super(endpoint, ioIterator, inFormat, outFormat);
-		parameters.put("id", templateId);
+		super(endpoint + "/" + templateId, ioIterator, inFormat, outFormat);
 	}
 
 	public static void addOptions(Options options) {
