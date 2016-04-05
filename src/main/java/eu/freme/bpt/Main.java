@@ -126,10 +126,10 @@ public class Main {
 				batchProcessingTool.setOutput(commandLine.getOptionValue("od"));
 			}
 			if (commandLine.hasOption('f')) {
-				batchProcessingTool.setInFormat(Format.valueOf(commandLine.getOptionValue('f')));
+				batchProcessingTool.setInFormat(Format.valueOf(commandLine.getOptionValue('f').replace('-', '_')));
 			}
 			if (commandLine.hasOption('o')) {
-				batchProcessingTool.setOutFormat(Format.valueOf(commandLine.getOptionValue('o')));
+				batchProcessingTool.setOutFormat(Format.valueOf(commandLine.getOptionValue('o').replace('-', '_')));
 			}
 
 			switch (service) {

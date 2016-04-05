@@ -23,10 +23,18 @@ package eu.freme.bpt.common;
 public enum Format {
 	text("txt", "text/plain"),
 	turtle("ttl", "text/turtle"),
+	n3("n3", "text/n3"),
+	n_triples("nt", "application/n-triples"),
+	json_ld("json", "application/ld+json"),
+	rdf_xml("xml", "application/rdf+xml"),
+	xliffXml("xml", "application/x-xliff+xml"),
+	html("html", "text/html"),
+	odt("odt", "application/x-openoffice"),
+	xml("xml", "text/xml")
 	;
-	// TODO: add other formats!
+
 	private final String fileExtension;
-	private final String mimeType;		// TODO: to mime type object of the HTTP library to be used...
+	private final String mimeType;		// TODO: to mime type object of the HTTP library to be used ?
 
 
 	Format(String fileExtension, String mimeType) {
