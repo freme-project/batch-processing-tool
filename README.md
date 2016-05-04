@@ -2,6 +2,8 @@
 
 ## Usage
 
+Below you can find examples of how to use the tool. For a more detailed description, we refer to the [specification](https://docs.google.com/document/d/1XTUGCizw-kEp66ySYvXJ5ZclPNwij49fwaVOKrWFZXw/edit#heading=h.nuaipbadbwzb).
+
 ### e-Terminology
 
 Process `input.ttl` (with the format `turtle`) using e-Terminology. The source language is `en` (English) and target language is `de` (German). The output format is also `turtle`.
