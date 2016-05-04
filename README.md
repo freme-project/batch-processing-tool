@@ -1,5 +1,29 @@
 # batch-processing-tool
 
+## Usage
+
+### e-Terminology
+
+Process `input.ttl` (with the format `turtle`) using e-Terminology. The source language is `en` (English) and target language is `de` (German). The output format is also `turtle`.
+The command is `java -jar batch-processing-tool-0.1-SNAPSHOT-jar-with-dependencies.jar -f turtle -if ./input.ttl -o turtle -s en -t de e-terminology`.
+
+### e-Translation
+
+Process `input.txt` (with the format `text`) using e-Translation. The source language is `en` (English) and target language is `de` (German). The output format is `turtl`.
+The command is `java -jar batch-processing-tool-0.1-SNAPSHOT-jar-with-dependencies.jar -f text -if ./input.txt -o turtle -s en -t de e-translate`.
+
+### e-Link
+
+Process `input.ttl` (with the format `turtle`) using e-Link. The templateid is `1`.
+The command is `java -jar batch-processing-tool-0.1-SNAPSHOT-jar-with-dependencies.jar -f turtle -if ./input.ttl -o turtle e-link --templateid 1`.
+
+### e-Entity
+
+Process `input.txt` (with the format `text`) using e-Entity. The output format is `turtle`.
+The command is `java -jar batch-processing-tool-0.1-SNAPSHOT-jar-with-dependencies.jar -f text -if ./input.txt -o turtle e-entity`.
+
+
+
 ## License
 
 Copyright 2015  Agro-Know, Deutsches Forschungszentrum für Künstliche Intelligenz, iMinds, 
