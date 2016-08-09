@@ -21,6 +21,8 @@ package eu.freme.bpt.common;
  *
  */
 public enum Format {
+
+	// formats officially supported by the FREME services
 	text("txt", "text/plain"),
 	turtle("ttl", "text/turtle"),
 	n3("n3", "text/n3"),
@@ -30,7 +32,11 @@ public enum Format {
 	xliffXml("xml", "application/x-xliff+xml"),
 	html("html", "text/html"),
 	odt("odt", "application/x-openoffice"),
-	xml("xml", "text/xml")
+	xml("xml", "text/xml"),
+
+	// formats needed by e-Publishing
+	zip("zip", "application/zip"),
+	epub3("epub3", "application/epub+zip")
 	;
 
 	private final String fileExtension;

@@ -72,22 +72,14 @@ public abstract class AbstractService implements Service {
 					HttpResponse<InputStream> response = Unirest.post(endpoint).headers(headers).queryString(parameters).body(input).asBinary();
 					if (response.getStatus() == 200) {
 						logger.debug("Request alright.");
-						InputStream responseInput = response.getBody();
-						try {
+						try (InputStream responseInput = response.getBody()) {
 							IOUtils.copy(responseInput, outputStream);
-							//success = true;
 							callback.onTaskComplete(io.getInputFile(), io.getOutputFile());
 						} catch (IOException e) {
 							logger.error("Error while writing response.", e);
 							callback.onTaskFails(io.getInputFile(), io.getOutputFile(), "Error while writing response. " + e.getMessage());
 							if (!failurePolicy.check()) {
 								System.exit(3);
-							}
-						} finally {
-							try {
-								responseInput.close();
-							} catch (IOException e) {
-								// not important :)
 							}
 						}
 					} else {
@@ -107,8 +99,8 @@ public abstract class AbstractService implements Service {
 					}
 				}
 			});
-			executorService.shutdown();
 		}
+		executorService.shutdown();
 		try {
 			executorService.awaitTermination(1, TimeUnit.DAYS);
 		} catch (InterruptedException e) {
