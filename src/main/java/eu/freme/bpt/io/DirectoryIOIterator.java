@@ -37,7 +37,7 @@ public class DirectoryIOIterator extends AbstractIOIterator {
 	 *                          these files are returned upon calling next().
 	 */
 	public DirectoryIOIterator(final File inputDirectory, final File outputDirectory, final Format outFormat) {
-		File[] inputFiles = inputDirectory.listFiles();
+		File[] inputFiles = inputDirectory.listFiles(File::isFile);
 		List<File> files = inputFiles == null ? Collections.emptyList() : Arrays.asList(inputFiles);
 		fileIterator = files.iterator();
 		outputDir = outputDirectory;

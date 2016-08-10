@@ -48,8 +48,23 @@ public class AbstractServiceTest {
 
 		ETranslation eTranslation = new ETranslation(properties.getUriOf(EService.E_TRANSLATION), ioIterator, Format.text, Format.turtle, "en", "de", null, null, null);
 
-		eTranslation.run(FailurePolicy.create(FailurePolicy.Strategy.ABORT, null), 4, new DummyCallback());
+		eTranslation.run(FailurePolicy.create(FailurePolicy.Strategy.ABORT, null), 1, new DummyCallback());
 		System.out.println("translation: " + outputStream.toString(StandardCharsets.UTF_8.name()));
+
+	}
+
+	@Test
+	public void testEEntity() throws IOException {
+		String input = "<html><body><p>Manneken Pis is the mascotte of Brussels.</p></html></body>";
+		InputStream inputStream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		IOIterator ioIterator = new SimpleIOIterator(new IO(inputStream, outputStream));
+		BPTProperties properties = new BPTProperties();
+
+		EEntity eEntity = new EEntity(properties.getUriOf(EService.E_ENTITY), ioIterator, Format.html, Format.html, "en", "dbpedia", "all");
+
+		eEntity.run(FailurePolicy.create(FailurePolicy.Strategy.ABORT, null), 1, new DummyCallback());
+		System.out.println("entities: " + outputStream.toString(StandardCharsets.UTF_8.name()));
 
 	}
 
