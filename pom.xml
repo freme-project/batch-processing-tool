@@ -135,6 +135,5 @@
 		<connection>scm:git:git@github.com:freme-project/batch-processing-tool.git</connection>
 		<url>scm:git:git@github.com/freme-project:batch-processing-tool.git</url>
 		<developerConnection>scm:git:git@github.com:freme-project/batch-processing-tool.git</developerConnection>
-		<tag>HEAD</tag>
 	</scm>
 </project>
