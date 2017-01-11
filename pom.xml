@@ -4,7 +4,7 @@
 
 	<groupId>eu.freme-project</groupId>
 	<artifactId>batch-processing-tool</artifactId>
-	<version>0.2-SNAPSHOT</version>
+	<version>0.1-SNAPSHOT</version>
 	<name>Batch Processing Tool</name>
 	<inceptionYear>2016</inceptionYear>
 
@@ -128,6 +128,32 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>3.0.1</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 
 	<scm>
 		<connection>scm:git:git@github.com:freme-project/batch-processing-tool.git</connection>
