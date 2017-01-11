@@ -4,7 +4,7 @@
 
 	<groupId>eu.freme-project</groupId>
 	<artifactId>batch-processing-tool</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.1</version>
 	<name>Batch Processing Tool</name>
 	<inceptionYear>2016</inceptionYear>
 
