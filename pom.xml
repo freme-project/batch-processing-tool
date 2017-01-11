@@ -11,7 +11,7 @@
 
 	<parent>
 		<groupId>eu.freme-project</groupId>
-		<artifactId>freme-parent</groupId>
+		<artifactId>freme-parent</artifactId>
 		<version>0.17</version>
 	</parent>
 
@@ -24,7 +24,6 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<log4j.version>2.5</log4j.version>
 	</properties>
 
 
@@ -113,23 +112,6 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.4</version>
-		</dependency>
-
-		<!-- Logging -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>${log4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>${log4j.version}</version>
-		</dependency>
-		<dependency> <!-- log4j logging to slf4j -->
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>${log4j.version}</version>
 		</dependency>
 
 		<!-- http calls -->
